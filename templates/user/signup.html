@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/bootstrap.min.css') }}">
+    <title>Login</title>
+    <script>
+      function signIn(){
+        var reg=document.getElementById('login');
+        reg.innerHTML='<object type='text/html' data='login.html' ></object>';
+      }
+    </script>
+    {% endblock%}
+  	{% block body %}
+
+    <div class='center-div' id='login'>
+      <h3 style='padding-left:20px;margin-top:40px;'>Sign Up</h3>
+      <form>
+        <div class='form-group' style='padding-left:20px;padding-right:20px;'>
+          <label for='name'>Full Name:</label>
+          <input type='text' class='form-control' id='name'>
+        </div>
+        <div class='form-group' style='padding-left:20px;padding-right:20px;'>
+          <label for='uname'>Username:</label>
+          <input type='text' class='form-control' id='uname'>
+        </div>
+        <div class='form-group' style='padding-left:20px;padding-right:20px;'>
+          <label for='num'>Aadhar No.:</label>
+          <input type='number' class='form-control' id='num'>
+        </div>
+        <div class='form-group' style='padding-left:20px;padding-right:20px;'>
+          <label for='pwd'>Password:</label>
+          <input type='password' class='form-control' id='pwd'>
+        </div>
+        <div class='form-group' style='padding-left:20px;padding-right:20px;'>
+          <label for='cpwd'>Confirm Password:</label>
+          <input type='password' class='form-control' id='cpwd'>
+        </div>
+        <div style='margin-left:20px;'>
+          <button type='submit' class='btn btn-default'>Sign Up</button>
+        </div>
+        <div style='margin-left:20px;margin-top:25px;'>
+          <p>Already have an account?</p>
+        </div>
+      </form>
+      <div style='margin-left:20px;'>
+        <button class='btn btn-default' onclick='signIn()'>Sign In</button>
+      </div>
+    </div>
+    {% endblock %}

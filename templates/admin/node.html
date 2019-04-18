@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/adminhome.css') }}">
+	<script src="{{  url_for('static', filename= 'admin/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'admin/js/bootstrap.min.js') }}"></script>
+
+		{% endblock%}
+		{% block body %}
+		{% include 'includes/_adminSidebar.html' %}
+<!-- //////////////////////////////////////////////////////////////// -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<div class="container" style="margin: 80px 0 0 350px ;">
+		<div class="row centered-form">
+			<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Manage Nodes</h3>
+					</div>
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="N_Add"  class="form-control input-sm" placeholder="Node Address">
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<input type="submit" value="Add" class=" form-control input-sm btn btn-info ">
+									</div>
+								</div>
+
+							<div class="row">
+								<table class="table">
+										  <thead class="thead-dark">
+										    <tr>
+										      <th scope="col">#</th>
+										      <th scope="col">IP</th>
+										      <th scope="col">Status</th>
+										      <th scope="col"></th>
+										      <th scope="col"></th>
+										    </tr>
+										  </thead>
+										  <tbody>
+										    <tr>
+										      <th scope="row">1</th>
+										      <td>192.168.21.3</td>
+										      <td>dead</td>
+										      <td><button type="submit" value="Edit" class="btn btn-primary"> Edit <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg> </button></td>
+
+										      <td><button type="submit" value="Delete" class="btn btn-danger"> Delete <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg></button></td>
+										    </tr>
+
+										  </tbody>
+								</table>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //////////////////////////////////////////////////////////////// -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='admin/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='admin/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+
+<style type="text/css">
+	body{
+		overflow-x: hidden;
+	}
+</style>
+
+{% endblock %}

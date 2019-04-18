@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/officialhome.css') }}">
+	<script src="{{  url_for('static', filename= 'official/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'official/js/bootstrap.min.js') }}"></script>
+
+	{% endblock%}
+	{% block body %}
+	{% include 'includes/_officialSidebar.html' %}
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+<main class="col-sm-9 offset-sm-3 coml-md-19 offset-md-2 pt-3">
+	<h1>Subject</h1>
+	<form style="margin-top:50px;" method="post">
+		<div class="form-group">
+			<div class="row">
+				<div class="col-md-6 text-left">
+					<h4 for="subject">Request Details</h4>
+				</div>
+				<div class="col-md-6 text-right">
+					<h4 style="text-align:right;">Date</h4>
+				</div>
+			</div>
+			<textarea class="form-control" id="content" rows="3" placeholder="Enter Content"></textarea>
+		</div>
+		<!-- I didn't understand the next field so I'm gonna leave it-->
+		<div class="form-group">
+			<input type="text" class="form-control" id="subject" placeholder="Add Comments">
+		</div>
+		<!-- Add the button functions -->
+
+		<div class="row">
+			<div class="col-xs-4 col-sm-4 col-md-2">
+					<div class="form-group">
+							<div class="col-xs-2">
+							<select class="form-control" name="Option">
+										<option value="option1">Option1</option>
+										<option value="option2">Option2</option>
+										<option value="option3">Option3</option>
+										<option value="option4">Option4</option>
+								</select>
+							</div>
+					</div>
+			</div>
+		<div class="row">
+
+			<div class="col-md-6 text-left">
+				<button class="btn btn-warning">Sign</button>
+			</div>
+			<div class="col-md-6 text-right">
+				<button class="btn btn-success">Submit</button>
+			</div>
+		</div>
+	</form>
+</main>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+
+<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='official/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='official/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+{% endblock %}

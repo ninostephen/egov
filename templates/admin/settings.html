@@ -1,0 +1,107 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/adminhome.css') }}">
+	<script src="{{  url_for('static', filename= 'admin/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'admin/js/bootstrap.min.js') }}"></script>
+	<style>
+		/* For Firefox */
+		input[type='number'] {
+    		-moz-appearance:textfield;
+		}
+
+		/* Webkit browsers like Safari and Chrome */
+		input[type=number]::-webkit-inner-spin-button,
+		input[type=number]::-webkit-outer-spin-button {
+    		-webkit-appearance: none;
+    		margin: 0;
+		}
+	</style>
+	<script>
+		document.getElementById('numdisabler').addEventListener('keydown', function(e) {
+			if (e.which === 38 || e.which === 40) {
+					e.preventDefault();
+				}
+		});
+	</script>
+
+	{% endblock%}
+	{% block body %}
+	{% include 'includes/_officialSidebar.html' %}
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////// -->
+
+<main class="col-sm-9 offset-sm-3 coml-md-19 offset-md-2 pt-3">
+	<h1>Settings</h1>
+	<div style="margin-top:50px;">
+		<form style="margin-top:50px;" method="POST">
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<h4 for="subject">Change Password</h4>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="password" class="form-control input-sm" name="opassword" placeholder="Enter Old Password" required>
+					</div>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="password" class="form-control input-sm" name="npassword" placeholder="Enter New Password" required>
+					</div>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<div class="form-group">
+						<input type="password" class="form-control input-sm" name="cpassword" placeholder="Confirm New Password" required>
+					</div>
+			</div>
+			<div class="col-md-6 text-right">
+				<button class="btn btn-success">Change Password</button>
+			</div>
+		</form>
+
+		<div style="margin-top:50px;">
+			<form style="margin-top:50px;" method="POST">
+				<div class="col-xs-6 col-sm-6 col-md-6">
+						<h4 for="subject">2 Factor Authentication</h4>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="number" id="numdisabler" class="form-control input-sm" name="number" placeholder="Enter Phone Number" required>
+						</div>
+				</div>
+				<div class="col-xs-6 col-sm-6 col-md-6">
+						<div class="form-group">
+							<input type="email" class="form-control input-sm" name="email" placeholder="Enter E-Mail" required>
+						</div>
+				</div>
+				<div class="col-md-6 text-right">
+					<button class="btn btn-success">Add 2FA</button>
+				</div>
+			</form>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<h4 for="subject">Change Key</h4>
+					<button class="btn btn-success">Change Key</button>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<h4 for="subject">Verify Chain</h4>
+					<button class="btn btn-success">Verify</button>
+			</div>
+			<div class="col-xs-6 col-sm-6 col-md-6">
+					<h4 for="subject">Backup Chain</h4>
+					<button class="btn btn-success">Backup</button>
+			</div>
+	</div>
+</main>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='admin/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='admin/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+{% endblock %}

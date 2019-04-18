@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/officialhome.css') }}">
+	<script src="{{  url_for('static', filename= 'official/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'official/js/bootstrap.min.js') }}"></script>
+
+	{% endblock%}
+	{% block body %}
+	{% include 'includes/_officialSidebar.html' %}
+<!-- //////////////////////////////////////////////////////////////// -->
+<main role="main" class="col-md-9 col-lg-10 pt-3 px-4">
+	<div class="container" style="margin: 0px 0 0 250px ;">
+		<div class="panel-heading">
+			<h3 class="panel-title ">Request List</h3>
+		</div>
+		<div class="row centered-form">
+			<div class="col-xs-10 col-sm-28 col-md-50 col-sm-offset-2 col-md-offset-4">
+				<div class="panel panel-default">
+
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+							<div class="row">
+								<table class="table">
+										  <thead class="thead-dark">
+										    <tr>
+										      <th scope="col">#</th>
+										      <th scope="col">Requestee</th>
+										      <th scope="col">Office</th>
+										      <th scope="col">Date</th>
+										      <th scope="col">Request</th>
+										    </tr>
+										  </thead>
+										  <tbody>
+										    <tr>
+										      <th scope="row">1</th>
+										      <td>Mark Zuckerberg</td>
+										      <td>Silicon Valley</td>
+										      <td>08/04/2019</td>
+										      <td>Request to breach facebook user data without being thrown into prison</td>
+										    </tr>
+
+										  </tbody>
+								</table>
+							</div>
+
+							<!--div class="form-group">
+								<input type="submit" class="form-control input-sm btn btn-info " value="Search">
+							</div-->
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //////////////////////////////////////////////////////////////// -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='official/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='official/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+{% endblock %}

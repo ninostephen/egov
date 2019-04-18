@@ -1,0 +1,109 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'official/css/officialhome.css') }}">
+	<script src="{{  url_for('static', filename= 'official/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'official/js/bootstrap.min.js') }}"></script>
+
+	{% endblock%}
+	{% block body %}
+	{% include 'includes/_navbar.html' %}
+	{% include 'includes/_officialSidebar.html' %}
+<!-- ///////////////////////////////////////////////////////// -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<div class="container" style="margin: 80px 0 0 350px ;">
+		<div class="row centered-form">
+			<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Document</h3>
+					</div>
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<select class="form-control" name="User No">
+										    <option value="Num1">Num1</option>
+										    <option value="Num2">Num2</option>
+										    <option value="Num3">Num3</option>
+										    <option value="Num4">Num4</option>
+								  	</select>
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<select class="form-control" name="Subject">
+										    <option value="Sub1">Sub1</option>
+										    <option value="Sub2">Sub2</option>
+										    <option value="Sub3">Sub3</option>
+										    <option value="Sub4">Sub4</option>
+								  	</select>
+								</div>
+							</div>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<div class="form-group">
+											<select class="form-control" name="Document-Type">
+											    <option value="Doc1">Doc1</option>
+											    <option value="Doc2">Doc2</option>
+											    <option value="Doc3">Doc3</option>
+											    <option value="Doc4">Doc4</option>
+									  		</select>
+										</div>
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<input type="submit" value="Search" class=" form-control input-sm btn btn-info ">
+									</div>
+								</div>
+								<div class="row">
+										<div class="col-xs-6 col-sm-6 col-md-6">
+											<div class="form-group">
+												<input type="text" name="date"  class="form-control input-sm" placeholder="Date">
+											</div>
+										</div>
+								</div>
+
+							<div class="row">
+								<table class="table">
+										  <thead class="thead-dark">
+											    <tr>
+											      <th scope="col">SNO</th>
+											      <th scope="col">Request</th>
+											      <th scope="col">Subject</th>
+											      <th scope="col">Date</th>
+											    </tr>
+										  </thead>
+										  <tbody>
+										    <tr>
+										      <th scope="row">1</th>
+										      <td>Mark</td>
+										      <td>Otto</td>
+										      <td>@mdo</td>
+										    </tr>
+										  </tbody>
+								</table>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //////////////////////////////////////////////////////// -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+
+<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='official/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='official/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='official/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+{% endblock %}

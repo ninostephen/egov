@@ -1,0 +1,112 @@
+{% extends 'layout.html' %}
+{% block head %}
+
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/adminhome.css') }}">
+	<script src="{{  url_for('static', filename= 'admin/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'admin/js/bootstrap.min.js') }}"></script>
+
+		{% endblock%}
+		{% block body %}
+		{% include 'includes/_navbar.html' %}
+		{% include 'includes/_adminSidebar.html' %}
+<!-- //////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+		<div class="container" >
+		<div class="row centered-form">
+			<div class="col-xs-12 col-sm-8 col-md-12 col-sm-offset-2 col-md-offset-4">
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Request Title</h3>
+					</div>
+					<br></br>
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+							<div class="container">
+								<div class="row ">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+										<h4 class="panel-body margin-left">Request Name</h4>
+										<br></br>
+										<div class="col-xs-6 col-sm-6 col-md-6">
+											<div class="form-group">
+												<textarea class="form-control" placeholder="Request Body" rows="4"></textarea>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-xs-6 col-sm-6 col-md-6">
+
+										<h4 class="panel-body margin-left">Date</h4>
+										<br></br>
+										<div class="col-xs-6 col-sm-6 col-md-6">
+											<table class="table">
+													  <thead class="thead-dark">
+														    <tr>
+														      <th scope="col">Verification Check</th>
+														    </tr>
+													  </thead>
+													  <tbody>
+														    <tr>
+														      <td>13456</td>
+
+														    </tr>
+													  </tbody>
+											</table>
+									</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-xs-5 col-sm-5 col-md-5">
+										<input type="text" name="comment"  class="form-control input-sm" placeholder="Comments">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-4 col-sm-4 col-md-2">
+											<div class="form-group">
+													<div class="col-xs-2">
+													<select class="form-control" name="Option">
+														    <option value="option1">Option1</option>
+														    <option value="option2">Option2</option>
+														    <option value="option3">Option3</option>
+														    <option value="option4">Option4</option>
+												  	</select>
+												  </div>
+											</div>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+											<div class="form-group">
+												<input type="submit" value="Sign" class="btn btn-info ">
+											</div>
+									</div>
+									<div class="col-xs-4 col-sm-4 col-md-4">
+											<div class="form-group">
+												<input type="submit" value="Submit" class="btn btn-info">
+											</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+
+<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='admin/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='admin/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+{% endblock %}

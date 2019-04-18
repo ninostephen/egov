@@ -1,0 +1,49 @@
+<!-- ////////////////////////////////////////////////////////////// -->
+<div class="container-fluid">
+	<div class="row">
+		<nav class="col-md-2 d-none d-md-block bg-light sidebar fixed">
+			<div class="sidebar-sticky">
+				<ul class="nav flex-column">
+					<h2 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+						<span>Dashboard</span>
+						<a class="d-flex align-items-center text-muted" href="#">
+							<span data-feather="command"></span>
+						</a>
+					</h2>
+
+					<!--li class="nav-item">
+						<a class="nav-link active" href="../official/coinstat">
+							<span data-feather="list"></span>
+							Coinstat
+						</a>
+					</li-->
+					<!--li class="nav-item">
+						<a class="nav-link active" href="../official/document">
+							<span data-feather="user-plus"></span>
+							Document
+						</a>
+					</li-->
+					<li class="nav-item">
+						<a class="nav-link active" href="{{ url_for('reqList') }}">
+							<span data-feather="bar-chart-2"></span>
+							Request list
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" href="{{ url_for('reqView') }}">
+							<span data-feather="activity"></span>
+							Request View
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" href="{{ url_for('officialSettings') }}">
+							<span data-feather="settings"></span>
+							Settings
+						</a>
+					</li>
+
+</ul>
+</div>
+</nav>
+</div>
+</div>

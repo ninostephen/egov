@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>E-Gov</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/adminhome.css') }}">
+	<script src="{{  url_for('static', filename= 'admin/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'admin/js/bootstrap.min.js') }}"></script>
+
+		{% endblock%}
+		{% block body %}
+		{% include 'includes/_adminSidebar.html' %}
+<!-- //////////////////////////////////////////////////////////////// -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<div class="container" style="margin: 80px 0 0 350px ;">
+		<div class="row centered-form">
+			<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Register</h3>
+					</div>
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+							<div class="form-group">
+								<input type="text" name="name"  class="form-control input-sm" placeholder="Name">
+							</div>
+							<div class="form-group">
+								<input type="text" name="pos"  class="form-control input-sm" placeholder="Position">
+							</div>
+							<div class="form-group">
+								<input type="tetx" name="emp_id" id="E_Id" class="form-control input-sm" placeholder="Employee ID">
+							</div>
+							<div class="form-group">
+								<input type="email" name="email" id="P_No" class="form-control input-sm" placeholder="Email Address">
+							</div>
+							<div class="row">
+								<input type="submit" value="Add Employee" class="btn btn-info btn-block">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //////////////////////////////////////////////////////////////// -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='admin/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='admin/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+<style type="text/css">
+	body{
+		overflow-x: hidden;
+	}
+</style>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+{% block head %}
+	<title>PES</title>
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{  url_for('static', filename= 'admin/css/adminhome.css') }}">
+	<script src="{{  url_for('static', filename= 'admin/js/jquery.min.js') }}"></script>
+	<script src="{{  url_for('static', filename= 'admin/js/bootstrap.min.js') }}"></script>
+
+		{% endblock%}
+		{% block body %}
+		{% include 'includes/_navbar.html' %}
+		{% include 'includes/_adminSidebar.html' %}
+<!-- //////////////////////////////////////////////////////////////// -->
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+	<div class="container" style="margin: 80px 0 0 350px ;">
+		<div class="row centered-form">
+			<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">Update info</h3>
+					</div>
+					<div class="panel-body">
+						<form role="form" method="POST" action="#">
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="userid"  class="form-control input-sm" placeholder="User ID">
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="submit" value="Search" class="btn btn-info form-control input-sm">
+									</div>
+								</div>
+							</div>
+								<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="name"  class="form-control input-sm" placeholder="Name">
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="phone"  class="form-control input-sm" placeholder="Phone No">
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="email" name="email"  class="form-control input-sm" placeholder="Email Address">
+									</div>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6">
+									<div class="form-group">
+										<input type="text" name="aadhar"  class="form-control input-sm" placeholder="Aadhar No">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<input type="password" name="pass"  class="form-control input-sm" placeholder="Password">
+							</div>
+							<div class="row">
+								<input type="submit" value="Update" class="btn btn-info btn-block">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+<!-- //////////////////////////////////////////////////////////////// -->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"></script>
+<script>window.jQuery || document.write("'<script src="{{ url_for('static',filename='admin/js/jquery.min.js') }}"><\/script>'")</script>
+<script src="{{ url_for('static', filename='admin/js/popper.min.js') }}"></script>
+<!-- Icons -->
+<script src="{{ url_for('static',filename='admin/js/icons.js') }}"></script>
+<script>
+feather.replace()
+</script>
+<style type="text/css">
+	body{
+		overflow-x: hidden;
+	}
+</style>
+
+{% endblock %}
