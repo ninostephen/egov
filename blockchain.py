@@ -20,7 +20,7 @@ class Blockchain:
         self.nodes=()
         self.nodeId = str(uuid4()).replace('-','')
         #Create Genesis Block
-        self.createBlock("Genesis")
+        self.createBlock("Genesis","00")
 
 #    def registerNode(self, nodeUrl):
 #        parsedUrl = urlparse(nodeUrl)
@@ -44,13 +44,14 @@ class Blockchain:
             }
         )
         transaction = dumps(transaction)
-        verified = verify(username, r, s, transaction)
+        print(transaction)
+        verified = verifyTransaction(r, s, transaction, senderpubKey=getPublicKey(username=senderAddr, type='user'))
         if varified:
             self.transactions.append(transaction)
             return len(self.chain) + 1
         return False
 
-    def createBlock(self, previousHash):
+    def createBlock(self, previousRHash, previousHash):
         # hash(self.chain[-1])
         block = {
             'block number' : str(len(self.chain) + 1),
