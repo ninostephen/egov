@@ -11,6 +11,33 @@ from collections import OrderedDict
 from blockCrypto import verifyTransaction
 from blockCrypto import getPublicKey
 
+# Block Structure
+'''
+block = {
+    Block Number : blockNo,
+    UUID of Requestee : UserID,
+    UUID of Official : OfficialID,
+    UUID of Unit : UnitID,
+    Transaction : {
+        signer : SignerID, # User/Official
+        Hash : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+        r : ,
+        s :
+    },
+    previousRHash : {
+        signer : SignerID, # User/Official
+        Hash : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+        r : ,
+        s :
+    },
+    previousHash : {
+        signer : SignerID, # User/Official
+        Hash : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+        r : ,
+        s :
+    }
+}
+'''
 
 # Block Class
 class Block:
@@ -25,7 +52,8 @@ class Blockchain:
     def __init__(self):
         self.head = Block()
 
-    def addBlock(self, blockNo, data, previousRHash, previousHash):
+    def addBlock(self, data, previousRHash, previousHash):
+        blockNo = length() + 1
         newBlock = Block(blockNo, data, previousRHash, previousHash)
         cur = self.head
         while cur.next != None:
