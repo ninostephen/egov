@@ -15,12 +15,13 @@ from blockCrypto import getPublicKey
 '''
 block = {
     Block Number : blockNo,
+    UUID of request : requestID,
     UUID of Requestee : UserID,
     UUID of Official : OfficialID,
     UUID of Unit : UnitID,
     Transaction : {
         signer : SignerID, # User/Official
-        Hash : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+            Hash : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
         r : ,
         s :
     },
@@ -41,24 +42,35 @@ block = {
 
 # Block Class
 class Block:
-    def __init__(self, blockNo = 0, data = "Genesis", previousRHash = '0x0', previousHash = '0x0'):
+    def __init__(self, blockNo, requestID, userID, officialID, unitID, transaction):
         self.blockNo = blockNo
-        self.data = data
-        self.previousRHash = previousRHash
-        self.previousHash = previousHash
+        self.requestID = requestID
+        self.userID = userID
+        self.officialID = officialID
+        self.userID = userID
+        self.transaction = transaction
         self.next = None
 
 class Blockchain:
     def __init__(self):
-        self.head = Block()
+        transaction = {
+            "main" : {
+                "data" : "Genesis Block"
+                "hash" : "a56119e7bc8f53e86dce305298b6795d4e534b5a9df0bf3b8ce7a149a4010493"
+            }
+        }
+        self.head = Block(blockNo = 0, requestID = uuid4(),  userID = "admin", officialID = "admin", unitID = "admin", transaction = dumps(transaction))
 
-    def addBlock(self, data, previousRHash, previousHash):
-        blockNo = length() + 1
-        newBlock = Block(blockNo, data, previousRHash, previousHash)
+    def addBlock(self, newBlock):
         cur = self.head
         while cur.next != None:
             cur = cur.next
         cur.next = newBlock
+
+    def createBlock(self, requestID, userID, officialID, unitID, data):
+        blockNo = length() + 1
+        newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, transaction = dumps(transaction))
+        addBlock(newBlock)
 
     def length(self):
         cur = self.head
@@ -66,7 +78,7 @@ class Blockchain:
         while cur.next != None:
             total = total + 1
             cur = cur.next
-        print(total)
+        #print(total)
         return total
 
     def displayChain(self):
@@ -76,7 +88,7 @@ class Blockchain:
             elems.append(cur.blockNo)
             cur = cur.next
         elems.append(cur.blockNo)
-        print(elems)
+        #print(elems)
         return elems
 
 
