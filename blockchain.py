@@ -53,12 +53,12 @@ class Block:
 
 class Blockchain:
     def __init__(self):
-        transaction = {
+        transaction = OrderedDict({
             "main" : {
                 "data" : "Genesis Block"
                 "hash" : "a56119e7bc8f53e86dce305298b6795d4e534b5a9df0bf3b8ce7a149a4010493"
             }
-        }
+        })
         self.head = Block(blockNo = 0, requestID = uuid4(),  userID = "admin", officialID = "admin", unitID = "admin", transaction = dumps(transaction))
 
     def addBlock(self, newBlock):
@@ -69,8 +69,44 @@ class Blockchain:
 
     def createBlock(self, requestID, userID, officialID, unitID, data):
         blockNo = length() + 1
+        headers = OrderedDict({
+            "block Number" : blockNo,
+            "request"      : requestID,
+            "requestee"    : userID,
+            "official"     : officialID,
+            "Unit"         : unitID
+        })
+        transactionHash = hash(dumps(headers)+data)
+        transaction = OrderedDict({
+            "main" : {
+                "signer" : userID, # User/Official
+                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+                "r" : ,
+                "s" :
+            },
+            "previousRHash" : {
+                "signer" : SignerID, # User/Official
+                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef #SHA256
+                "r" : ,
+                "s" :
+            },
+            "previousHash" : {
+                "signer" : SignerID, # User/Official
+                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef #SHA256
+                "r" : ,
+                "s" :
+            }
+        })
+
         newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, transaction = dumps(transaction))
         addBlock(newBlock)
+
+    def getRHash(self, requestID):
+        
+        pass
+        #return sha256
+    def getPHash(self, blockNo):
+        pass
 
     def length(self):
         cur = self.head
