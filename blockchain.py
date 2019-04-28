@@ -69,6 +69,8 @@ class Blockchain:
 
     def createBlock(self, requestID, userID, officialID, unitID, data):
         blockNo = length() + 1
+        pHash = getPHash(blockNo)
+        rHash = getRHash(requestID)
         headers = OrderedDict({
             "block Number" : blockNo,
             "request"      : requestID,
@@ -86,13 +88,13 @@ class Blockchain:
             },
             "previousRHash" : {
                 "signer" : SignerID, # User/Official
-                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef #SHA256
+                "Hash" : rHash, #SHA256
                 "r" : ,
                 "s" :
             },
             "previousHash" : {
                 "signer" : SignerID, # User/Official
-                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef #SHA256
+                "Hash" : pHash, #SHA256
                 "r" : ,
                 "s" :
             }
@@ -102,7 +104,7 @@ class Blockchain:
         addBlock(newBlock)
 
     def getRHash(self, requestID):
-        
+
         pass
         #return sha256
     def getPHash(self, blockNo):
