@@ -4,6 +4,7 @@
 # Blockchain Module
 
 from uuid import uuid4
+from json import dump
 from json import dumps
 from hashlib import sha256
 from datetime import datetime
@@ -66,7 +67,12 @@ class Blockchain:
             }
         })
         self.head = Block(blockNo = 0, requestID = uuid4(),  userID = "admin", officialID = "admin", unitID = "admin", headers = headers, transaction = transaction)
-
+        data = OrderedDict({
+            "headers" : dumps(headers),
+            "transcation" : dumps(transaction)
+        })
+        with open('chain/chain.json',"a") as chainfile:
+            dump(data,chainfile)
     def addBlock(self, newBlock):
         cur = self.head
         while cur.next != None:
@@ -115,12 +121,12 @@ class Blockchain:
 
         newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, headers = headers, transaction = transaction)
         data = OrderedDict({
-            "headers" : dumps(header),
+            "headers" : dumps(headers),
             "transcation" : dumps(transaction)
         })
         addBlock(newBlock)
         with open('chain/chain.json',"a") as chainfile:
-            dump(chainfile, data)
+            dump(data, chainfile)
 
     def getTHash(self, data):
         return sha256(data).hexdigest()
@@ -159,13 +165,14 @@ class Blockchain:
             elem = [dumps(cur.headers, indent=4, sort_keys=True) , dumps(cur.transaction, indent=4, sort_keys=True)]
             elems.append(elem)
             cur = cur.next
-            elem.pop()
-            elem.pop()
+#            elem.pop()
+#            elem.pop()
 
+        elems.append(dumps(cur.headers, indent=4, sort_keys=True))
         elems.append(dumps(cur.transaction, indent=4, sort_keys=True))
         for elem in elems:
             print(elem)
-        return elems
+#        return elems
 
 
 '''
