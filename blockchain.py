@@ -42,12 +42,13 @@ block = {
 
 # Block Class
 class Block:
-    def __init__(self, blockNo, requestID, userID, officialID, unitID, transaction):
+    def __init__(self, blockNo, requestID, userID, officialID, unitID, headers, transaction):
         self.blockNo = blockNo
         self.requestID = requestID
         self.userID = userID
         self.officialID = officialID
         self.userID = userID
+        self.headers = headers
         self.transaction = transaction
         self.next = None
 
@@ -55,7 +56,7 @@ class Blockchain:
     def __init__(self):
         transaction = OrderedDict({
             "main" : {
-                "data" : "Genesis Block"
+                "data" : "Genesis Block",
                 "hash" : "a56119e7bc8f53e86dce305298b6795d4e534b5a9df0bf3b8ce7a149a4010493"
             }
         })
@@ -69,8 +70,7 @@ class Blockchain:
 
     def createBlock(self, requestID, userID, officialID, unitID, data):
         blockNo = length() + 1
-        pHash = getPHash(blockNo)
-        rHash = getRHash(requestID)
+
         headers = OrderedDict({
             "block Number" : blockNo,
             "request"      : requestID,
@@ -78,11 +78,13 @@ class Blockchain:
             "official"     : officialID,
             "Unit"         : unitID
         })
-        transactionHash = hash(dumps(headers)+data)
+        tHash = getTHash(dumps(headers).encode('ascii') + data)
+        pHash = getPHash(blockNo - 1)
+        rHash = getRHash(requestID)1
         transaction = OrderedDict({
             "main" : {
                 "signer" : userID, # User/Official
-                "Hash" : 3abd011ccc65c133f173bb7bc9aefa910cca94165038da1c3ea23f8f30e11cef, #SHA256
+                "Hash" : tHash, #SHA256
                 "r" : ,
                 "s" :
             },
@@ -103,12 +105,18 @@ class Blockchain:
         newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, transaction = dumps(transaction))
         addBlock(newBlock)
 
+    def getTHash(self, data):
+        return sha256(data).hexdigest()
+
     def getRHash(self, requestID):
 
         pass
         #return sha256
     def getPHash(self, blockNo):
-        pass
+        cur = self.head
+        while(cur.blockNo != blockNo):
+            cur = cur.next
+        return  sha256(cur.headers + cur.transaction).hexdigest()
 
     def length(self):
         cur = self.head
