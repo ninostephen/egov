@@ -154,11 +154,17 @@ class Blockchain:
     def displayChain(self):
         elems = []
         cur = self.head
+        elem = []
         while cur.next != None:
-            elems.append(cur.blockNo)
+            elem = [dumps(cur.headers, indent=4, sort_keys=True) , dumps(cur.transaction, indent=4, sort_keys=True)]
+            elems.append(elem)
             cur = cur.next
-        elems.append(cur.blockNo)
-        #print(elems)
+            elem.pop()
+            elem.pop()
+
+        elems.append(dumps(cur.transaction, indent=4, sort_keys=True))
+        for elem in elems:
+            print(elem)
         return elems
 
 
