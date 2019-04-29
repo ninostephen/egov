@@ -80,7 +80,7 @@ class Blockchain:
         })
         tHash = getTHash(dumps(headers).encode('ascii') + data)
         pHash = getPHash(blockNo - 1)
-        rHash = getRHash(requestID)1
+        rHash = getRHash(requestID)
         transaction = OrderedDict({
             "main" : {
                 "signer" : userID, # User/Official
@@ -109,9 +109,16 @@ class Blockchain:
         return sha256(data).hexdigest()
 
     def getRHash(self, requestID):
+        cur = self.head
+        while (cur.next):
+            if cur.requestID  == requestID :
+                lastRBlock = cur.blockNo
+            cur = cur.next
+        cur = self.head
+        while (cur.blockNo != lastRBlock):
+            cur = cur.next
+        return sha256(cur.headers + cur.transaction).hexdigest()
 
-        pass
-        #return sha256
     def getPHash(self, blockNo):
         cur = self.head
         while(cur.blockNo != blockNo):
