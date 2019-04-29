@@ -54,13 +54,18 @@ class Block:
 
 class Blockchain:
     def __init__(self):
+        headers = OrderedDict({
+            "main" : {
+                "signerID" : "Genesis Block Admin"
+            }
+        })
         transaction = OrderedDict({
             "main" : {
                 "data" : "Genesis Block",
                 "hash" : "a56119e7bc8f53e86dce305298b6795d4e534b5a9df0bf3b8ce7a149a4010493"
             }
         })
-        self.head = Block(blockNo = 0, requestID = uuid4(),  userID = "admin", officialID = "admin", unitID = "admin", transaction = dumps(transaction))
+        self.head = Block(blockNo = 0, requestID = uuid4(),  userID = "admin", officialID = "admin", unitID = "admin", headers = headers, transaction = transaction)
 
     def addBlock(self, newBlock):
         cur = self.head
@@ -70,7 +75,7 @@ class Blockchain:
 
     def createBlock(self, requestID, userID, officialID, unitID, data):
         blockNo = length() + 1
-
+        SignerID = userID
         headers = OrderedDict({
             "block Number" : blockNo,
             "request"      : requestID,
@@ -81,29 +86,41 @@ class Blockchain:
         tHash = getTHash(dumps(headers).encode('ascii') + data)
         pHash = getPHash(blockNo - 1)
         rHash = getRHash(requestID)
+        r_CurrentTransaction, s_CurrentTransaction, _ = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
+
+        r_PreviousTransaction, s_PreviousTransaction , _ = signTransaction(username = SignerID, transactionData = pHash, type = 'user')
+
+        r_RelatedPreviousTransaction, s_RelatedPreviousTransaction, _ = signTransaction(username = SignerID, transactionData = rHash, type = 'user')
+
         transaction = OrderedDict({
             "main" : {
-                "signer" : userID, # User/Official
+                "signer" : SignerID, # User/Official
                 "Hash" : tHash, #SHA256
-                "r" : ,
-                "s" :
+                "r" : r_CurrentTransaction ,
+                "s" : s_CurrentTransaction
             },
             "previousRHash" : {
                 "signer" : SignerID, # User/Official
                 "Hash" : rHash, #SHA256
-                "r" : ,
-                "s" :
+                "r" : r_RelatedPreviousTransaction,
+                "s" : s_RelatedPreviousTransaction
             },
             "previousHash" : {
                 "signer" : SignerID, # User/Official
                 "Hash" : pHash, #SHA256
-                "r" : ,
-                "s" :
+                "r" : r_PreviousTransaction,
+                "s" : s_PreviousTransaction
             }
         })
 
-        newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, transaction = dumps(transaction))
+        newBlock = Block(blockNo, requestID = requestID, userID = userID, officialID = officialID, unitID = unitID, headers = headers, transaction = transaction)
+        data = OrderedDict({
+            "headers" : dumps(header),
+            "transcation" : dumps(transaction)
+        })
         addBlock(newBlock)
+        with open('chain/chain.json',"a") as chainfile:
+            dump(chainfile, data)
 
     def getTHash(self, data):
         return sha256(data).hexdigest()
@@ -117,7 +134,7 @@ class Blockchain:
         cur = self.head
         while (cur.blockNo != lastRBlock):
             cur = cur.next
-        return sha256(cur.headers + cur.transaction).hexdigest()
+        return sha256(dumps(cur.headers).encode('ascii') + dumps(cur.transaction).encode('ascii')).hexdigest()
 
     def getPHash(self, blockNo):
         cur = self.head
