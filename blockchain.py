@@ -73,6 +73,7 @@ class Blockchain:
         })
         with open('chain/chain.json',"a") as chainfile:
             dump(data,chainfile)
+            chainfile.write('\n')
     def addBlock(self, newBlock):
         cur = self.head
         while cur.next != None:
@@ -127,6 +128,7 @@ class Blockchain:
         addBlock(newBlock)
         with open('chain/chain.json',"a") as chainfile:
             dump(data, chainfile)
+            chainfile.write('\n')
 
     def getTHash(self, data):
         return sha256(data).hexdigest()
