@@ -131,10 +131,11 @@ class Blockchain:
             chainfile.write('\n')
 
     def getTHash(self, data):
-        return sha256(data).hexdigest()
+        return sha256(data.encode('ascii')).hexdigest()
 
     def getRHash(self, requestID):
         cur = self.head
+        lastRBlock =  cur.blockNo
         while (cur.next):
             if cur.requestID  == requestID :
                 lastRBlock = cur.blockNo
@@ -148,7 +149,7 @@ class Blockchain:
         cur = self.head
         while(cur.blockNo != blockNo):
             cur = cur.next
-        return  sha256(cur.headers + cur.transaction).hexdigest()
+        return  sha256(dumps(cur.headers).encode('ascii') + dumps(cur.transaction).encode('ascii')).hexdigest()
 
     def length(self):
         cur = self.head
