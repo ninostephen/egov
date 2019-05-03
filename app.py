@@ -10,7 +10,6 @@ from flask import redirect
 from flask import url_for
 from flask import session
 from flask import logging
-from flask import session
 from flask import render_template
 from flask_mysqldb import MySQL
 from uuid import uuid4

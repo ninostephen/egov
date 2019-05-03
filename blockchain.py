@@ -9,6 +9,7 @@ from json import dumps
 from hashlib import sha256
 from datetime import datetime
 from collections import OrderedDict
+from blockCrypto import signTransaction
 from blockCrypto import verifyTransaction
 from blockCrypto import getPublicKey
 
@@ -79,9 +80,17 @@ class Blockchain:
         while cur.next != None:
             cur = cur.next
         cur.next = newBlock
+    def length(self):
+        cur = self.head
+        total = 0
+        while cur.next != None:
+            total = total + 1
+            cur = cur.next
+        #print(total)
+        return total
 
     def createBlock(self, requestID, userID, officialID, unitID, data):
-        blockNo = length() + 1
+        blockNo = self.length() + 1
         SignerID = userID
         headers = OrderedDict({
             "block Number" : blockNo,
@@ -90,9 +99,9 @@ class Blockchain:
             "official"     : officialID,
             "Unit"         : unitID
         })
-        tHash = getTHash(dumps(headers).encode('ascii') + data)
-        pHash = getPHash(blockNo - 1)
-        rHash = getRHash(requestID)
+        tHash = self.getTHash(dumps(headers).encode('ascii') + str(data).encode('ascii'))
+        pHash = self.getPHash(blockNo - 1)
+        rHash = self.getRHash(requestID)
         r_CurrentTransaction, s_CurrentTransaction, _ = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
 
         r_PreviousTransaction, s_PreviousTransaction , _ = signTransaction(username = SignerID, transactionData = pHash, type = 'user')
@@ -125,13 +134,13 @@ class Blockchain:
             "headers" : dumps(headers),
             "transcation" : dumps(transaction)
         })
-        addBlock(newBlock)
+        self.addBlock(newBlock)
         with open('chain/chain.json',"a") as chainfile:
             dump(data, chainfile)
             chainfile.write('\n')
 
     def getTHash(self, data):
-        return sha256(data.encode('ascii')).hexdigest()
+        return sha256(data).hexdigest()
 
     def getRHash(self, requestID):
         cur = self.head
@@ -151,30 +160,24 @@ class Blockchain:
             cur = cur.next
         return  sha256(dumps(cur.headers).encode('ascii') + dumps(cur.transaction).encode('ascii')).hexdigest()
 
-    def length(self):
-        cur = self.head
-        total = 0
-        while cur.next != None:
-            total = total + 1
-            cur = cur.next
-        #print(total)
-        return total
 
     def displayChain(self):
         elems = []
         cur = self.head
         elem = []
         while cur.next != None:
-            elem = [dumps(cur.headers, indent=4, sort_keys=True) , dumps(cur.transaction, indent=4, sort_keys=True)]
-            elems.append(elem)
+            print(dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True))
+#            elem = [dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True)]
+#            elems.append(elem)
             cur = cur.next
 #            elem.pop()
 #            elem.pop()
+        print(dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True))
 
-        elems.append(dumps(cur.headers, indent=4, sort_keys=True))
-        elems.append(dumps(cur.transaction, indent=4, sort_keys=True))
-        for elem in elems:
-            print(elem)
+#        elems.append(dumps(cur.headers, indent=4, sort_keys=True))
+#        elems.append(dumps(cur.transaction, indent=4, sort_keys=True))
+#        for elem in elems:
+#            print(elem)
 #        return elems
 
 
