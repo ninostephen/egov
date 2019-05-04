@@ -28,8 +28,8 @@ app = Flask(__name__)
 
 # Database Configs
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'password'
 app.config['MYSQL_DB'] = 'egov'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -168,10 +168,6 @@ def settings():
 def status():
     return render_template('user/status.html')
 
-#@app.route('/user/documents', methods = ['GET', 'POST'])
-#@isUserLoggedIn
-#def documents():
-#    return render_template('user/getdoc.html')
 
 # Official Pages
 
@@ -209,12 +205,12 @@ def reqList():
     if request.method == 'POST':
         return render_template('official/requestlist.html')
     cur = mysql.connection.cursor()
-    result = cur.execute("SELECT * FROM  reqlist LIMIT 10")
-    if result > 0:
-        reqlist = []
-        data = cur.fetchall()
-        for item in data:
-            reqlist.append(item)
+#    result = cur.execute("SELECT * FROM  reqlist LIMIT 10")
+#    if result > 0:
+#        reqlist = []
+#        data = cur.fetchall()
+#        for item in data:
+#            reqlist.append(item)
     return render_template('official/requestlist.html')
 
 @app.route('/official/view/', methods = ['GET', 'POST'])
@@ -279,26 +275,6 @@ def regOfficial():
         return render_template('admin/register.html')
     return render_template('admin/register.html')
 
-#@app.route('/admin/debuguser', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
-#def debuguser():
-#    if request.method == 'POST':
-#        return render_template('admin/debug.html')
-#    return render_template('admin/debug.html')
-
-#@app.route('/admin/list', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
-#def adminReq():
-#    if request.method == 'POST':
-#        return render_template('admin/requestlist.html')
-#    return render_template('admin/requestlist.html')
-
-#@app.route('/admin/view', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
-#def adminViewReq():
-#    if request.method == 'POST':
-#        return render_template('admin/requestview.html')
-#    return render_template('admin/requestview.html')
 
 if __name__ == '__main__':
     app.secret_key = 'secret123'

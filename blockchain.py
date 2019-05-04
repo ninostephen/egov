@@ -102,11 +102,11 @@ class Blockchain:
         tHash = self.getTHash(dumps(headers).encode('ascii') + str(data).encode('ascii'))
         pHash = self.getPHash(blockNo - 1)
         rHash = self.getRHash(requestID)
-        r_CurrentTransaction, s_CurrentTransaction, _ = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
+        r_CurrentTransaction, s_CurrentTransaction, tHash = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
 
-        r_PreviousTransaction, s_PreviousTransaction , _ = signTransaction(username = SignerID, transactionData = pHash, type = 'user')
+        r_PreviousTransaction, s_PreviousTransaction , pHash = signTransaction(username = SignerID, transactionData = pHash, type = 'user')
 
-        r_RelatedPreviousTransaction, s_RelatedPreviousTransaction, _ = signTransaction(username = SignerID, transactionData = rHash, type = 'user')
+        r_RelatedPreviousTransaction, s_RelatedPreviousTransaction, rHash = signTransaction(username = SignerID, transactionData = rHash, type = 'user')
 
         transaction = OrderedDict({
             "main" : {
