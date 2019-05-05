@@ -167,16 +167,24 @@ def apply():
     UNITS = ['iedc', 'nss', 'ieee', 'technocratz']
     if request.method == 'POST':
         subject = request.form['subject']
-        unit = request.form['unit'].lower()
-        body = request.form['content']
+        unit = request.form['unit']
+        content = request.form['content']
         checker = request.form['checker']
         cursor = mysql.connection.cursor()
         app.logger.info(subject)
         app.logger.info(unit)
-        app.logger.info(body)
+        app.logger.info(content)
         app.logger.info(checker)
+        status = "not signed"
+        userid = session['userid']
+        requestId = str(uuid4()).replace("-","")
+        comments = "null"
+        integrity = "valid"
+
+        #app.logger.info(values)
         if 'sign' in checker :
             app.logger.info('sign')
+            return render_template('user/apply.html', subject=subject, unit=unit, content=content)
         elif 'draft' in checker :
             app.logger.info('draft')
         else :
