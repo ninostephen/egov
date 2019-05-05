@@ -93,25 +93,31 @@ def signoutAdmin():
 def userLogin():
     if request.method == 'POST':
         username = request.form['username']
-        passwordCandidate = request.form['password']
+        passwordCandidate = request.form['pwd']
 
+        query = "SELECT * FROM users where username = '" + username +"';"
+#        app.logger.info(query)
         cursor = mysql.connection.cursor()
-        results = cursor.execute("SELECT * FROM userLogin where username = %s",[username])
+        results = cursor.execute(query)
         if results > 0 :
-            data = cur.fetchone()
+            data = cursor.fetchone()
             password = data['password']
             #Compare Passwords
             if sha256_crypt.verify(passwordCandidate, password):
                 session['loggedIn'] = True
-                session['username'] = username
-                session['secret_key'] = str(uuid4()).replace("-","") + str(uuid4()).replace("-","")
+                session['username'] = data['username']
+                session['name'] = data['name']
+                session['userid'] = data['userid']
+#                session['secret_key'] = str(uuid4()).replace("-","") + str(uuid4()).replace("-","")
 
                 return redirect(url_for('apply'))
             else :
                 error = 'Invaid Username or Password'
+                app.logger.error(error)
                 return redirect(url_for('userLogin'))
         else :
             error = 'Invaid Username or Password'
+            app.logger.error(error)
             return redirect(url_for('userLogin'))
         return render_template('user/login.html')
     return render_template('user/login.html')
@@ -156,7 +162,7 @@ def registerUser():
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/user/', methods = ['GET', 'POST'])
 @app.route('/user/apply', methods = ['GET', 'POST'])
-#@isUserLoggedIn
+@isUserLoggedIn
 def apply():
     UNITS = ['iedc', 'nss', 'ieee', 'technocratz']
     if request.method == 'POST':
@@ -186,18 +192,18 @@ def apply():
     return render_template('user/apply.html')
 
 @app.route('/user/draft', methods = ['GET', 'POST'])
-#@isUserLoggedIn
+@isUserLoggedIn
 def draft():
     return render_template('user/draft.html')
 
 @app.route('/user/settings', methods = ['GET', 'POST'])
-#@isUserLoggedIn
+@isUserLoggedIn
 def settings():
     return render_template('user/settings.html')
 
 
 @app.route('/user/status', methods = ['GET', 'POST'])
-#@isUserLoggedIn
+@isUserLoggedIn
 def status():
     return render_template('user/status.html')
 
