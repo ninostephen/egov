@@ -16,6 +16,7 @@ from uuid import uuid4
 from json import dumps
 from functools import wraps
 from base64 import b64encode
+from collections import OrderedDict
 from passlib.hash import sha256_crypt
 
 from blockchain  import Blockchain
@@ -37,7 +38,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Database Object
 mysql = MySQL(app)
 
-#blockchain = Blockchain()
+chain = Blockchain()
 
 # Check if user logged in
 def isUserLoggedIn(f):
@@ -149,7 +150,7 @@ def registerUser():
         type = 'user'
         publicKey = getPublicKey(username=username, type='user').decode('utf-8')
         query = 'INSERT INTO userKeys(userid,type,publilcKey) VALUES ( "' + userid + '","' + type + '","' + publicKey + '");'
-        app.logger.info(query)
+#        app.logger.info(query)
         result = cursor.execute(query)
 #        app.logger.info(result)
         mysql.connection.commit()
@@ -171,31 +172,33 @@ def apply():
         content = request.form['content']
         checker = request.form['checker']
         cursor = mysql.connection.cursor()
-        app.logger.info(subject)
-        app.logger.info(unit)
-        app.logger.info(content)
-        app.logger.info(checker)
+#        app.logger.info(subject)
+#        app.logger.info(unit)
+#        app.logger.info(content)
+#        app.logger.info(checker)
         status = "not signed"
         userid = session['userid']
         requestId = str(uuid4()).replace("-","")
         comments = "null"
         integrity = "valid"
-
         #app.logger.info(values)
         if 'sign' in checker :
             app.logger.info('sign')
+            data = OrderedDict({
+                "subject" : subject,
+                "unit" : unit,
+                "content" : content
+            })
+            dHash = chain.getTHash(dumps(data).encode('ascii'))
+            session[requestId] = dHash
+            app.logger.info(dHash)
             return render_template('user/apply.html', subject=subject, unit=unit, content=content)
         elif 'draft' in checker :
             app.logger.info('draft')
+            return render_template('user/draft.html')
         else :
             app.logger.info('submit')
-            #transaction = {
-            #'subject' : subject,
-            #'content' : content,
-            #'unit' : unit
-            #}
-            #r, s, transactionData = signTransaction(username='nino', transactionData=dumps(transactionData), type='user')
-            #query = "INSERT INTO request(reqId, unit, requesteeId, reqHeading, content, s, r) VALUES ({reqId}, {unit}, {requesteeId}, {reqHeading}, {content}, {s}, {r})".format(reqId = str(uuid4()).replace("-","") , unit=unit, requesteeId=0, reqHeading=subject, content=content, s=s, r=r)
+
             try:
                 pass
             #    cursor.execute(query)

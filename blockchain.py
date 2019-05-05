@@ -99,7 +99,8 @@ class Blockchain:
             "official"     : officialID,
             "Unit"         : unitID
         })
-        tHash = self.getTHash(dumps(headers).encode('ascii') + str(data).encode('ascii'))
+        tHash = self.getTHash(dumps(headers).encode('ascii') + dumps(data).encode('ascii'))
+        dHash = self.getTHash(dumps(data).encode('ascii'))
         pHash = self.getPHash(blockNo - 1)
         rHash = self.getRHash(requestID)
         r_CurrentTransaction, s_CurrentTransaction, tHash = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
@@ -112,6 +113,7 @@ class Blockchain:
             "main" : {
                 "signer" : SignerID, # User/Official
                 "Hash" : tHash, #SHA256
+                "dHash" : dHash,
                 "r" : r_CurrentTransaction ,
                 "s" : s_CurrentTransaction
             },
