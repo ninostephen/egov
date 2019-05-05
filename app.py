@@ -180,7 +180,7 @@ def apply():
         userid = session['userid']
 
         comments = "null"
-        integrity = "valid"
+        integrity = "Invaid"
         #app.logger.info(values)
         if 'sign' in checker :
             session['signed'] = "not signed"
@@ -194,14 +194,29 @@ def apply():
             dHash = chain.getTHash(dumps(data).encode('ascii'))
             session[requestId] = dHash
             session["1"] = requestId
+            session['valid'] = "valid"
             session['signed'] = "signed"
             app.logger.info(requestId)
             app.logger.info(dHash)
             return render_template('user/apply.html', subject=subject, unit=unit, content=content)
         elif 'draft' in checker :
-            session['signed'] = "not signed"
             app.logger.info('draft')
+            session['signed'] = "not signed"
+            status = session['signed']
+            requestId = session["1"]
+            integrity = "Invaid"
+            session['valid'] = integrity
+            proof = "Not Defined"
+            query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+            app.logger.info(query)
+            try:
+                cursor.execute(query)
+                mysql.connection.commit()
+                cursor.close()
+            except Exception as e:
+                app.logger.error(e)
             return render_template('user/draft.html')
+
         else :
 
             status = session['signed']
@@ -212,7 +227,7 @@ def apply():
             app.logger.info('submit')
 
             try:
-                
+
                 cursor.execute(query)
                 mysql.connection.commit()
                 cursor.close()
