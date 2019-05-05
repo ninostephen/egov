@@ -109,6 +109,8 @@ def userLogin():
                 session['username'] = data['username']
                 session['name'] = data['name']
                 session['userid'] = data['userid']
+                session['rid'] = False
+                session['update'] = False
 #                session['secret_key'] = str(uuid4()).replace("-","") + str(uuid4()).replace("-","")
 
                 return redirect(url_for('apply'))
@@ -160,87 +162,137 @@ def registerUser():
         return render_template('user/signup.html')
     return render_template('user/signup.html')
 
+@app.route('/user/application/<requestId>', methods = ['GET', 'POST'])
+@isUserLoggedIn
+def application(requestId):
+    app.logger.info('application method')
+    app.logger.info(requestId)
+    session['rid'] = requestId
+    session['update'] = True
+    return redirect(url_for('apply'))
+
+
+
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/user/', methods = ['GET', 'POST'])
 @app.route('/user/apply', methods = ['GET', 'POST'])
 @isUserLoggedIn
 def apply():
-    UNITS = ['iedc', 'nss', 'ieee', 'technocratz']
+#    UNITS = ['iedc', 'nss', 'ieee', 'technocratz']s
+
     if request.method == 'POST':
-        subject = request.form['subject']
-        unit = request.form['unit']
-        content = request.form['content']
-        checker = request.form['checker']
-        cursor = mysql.connection.cursor()
-#        app.logger.info(subject)
-#        app.logger.info(unit)
-#        app.logger.info(content)
-#        app.logger.info(checker)
-
-        userid = session['userid']
-
-        comments = "null"
-        integrity = "Invaid"
-        #app.logger.info(values)
-        if 'sign' in checker :
-            session['signed'] = "not signed"
-            requestId = str(uuid4()).replace("-","")
-            app.logger.info('sign')
-            data = OrderedDict({
-                "subject" : subject,
-                "unit" : unit,
-                "content" : content
-            })
-            dHash = chain.getTHash(dumps(data).encode('ascii'))
-            session[requestId] = dHash
-            session["1"] = requestId
-            session['valid'] = "valid"
-            session['signed'] = "signed"
+        if session['rid']:
+            requestId = session['rid']
             app.logger.info(requestId)
-            app.logger.info(dHash)
+            query = "SELECT subject,unit,body from request where requestId ='" + requestId + "';"
+            app.logger.info(query)
+            cursor = mysql.connection.cursor()
+            cursor.execute(query)
+            record = cursor.fetchone()
+            app.logger.info(record)
+            subject = record['subject']
+            unit = record['unit']
+            content = record['body']
+            cursor.close()
+            session['requestId'] = requestId
+            session['rid'] = False
+
             return render_template('user/apply.html', subject=subject, unit=unit, content=content)
-        elif 'draft' in checker :
-            app.logger.info('draft')
-            session['signed'] = "not signed"
-            status = session['signed']
-            requestId = session["1"]
+        else:
+            subject = request.form['subject']
+            unit = request.form['unit']
+            content = request.form['content']
+            checker = request.form['checker']
+            cursor = mysql.connection.cursor()
+    #        app.logger.info(subject)
+    #        app.logger.info(unit)
+    #        app.logger.info(content)
+    #        app.logger.info(checker)
+            userid = session['userid']
+            comments = "null"
             integrity = "Invaid"
-            session['valid'] = integrity
-            proof = "Not Defined"
-            query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
-            app.logger.info(query)
-            try:
-                cursor.execute(query)
-                mysql.connection.commit()
-                cursor.close()
-            except Exception as e:
-                app.logger.error(e)
-            return render_template('user/draft.html')
-
-        else :
-
-            status = session['signed']
-            requestId = session["1"]
-            proof = session[requestId]
-            query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
-            app.logger.info(query)
-            app.logger.info('submit')
-
-            try:
-
-                cursor.execute(query)
-                mysql.connection.commit()
-                cursor.close()
-            except Exception as e:
-                app.logger.error(e)
-            session['signed'] = "not signed"
-            return render_template('user/apply.html')
+            #app.logger.info(values)
+            if 'sign' in checker :
+                session['signed'] = "not signed"
+                requestId = str(uuid4()).replace("-","")
+                app.logger.info('sign')
+                data = OrderedDict({
+                    "subject" : subject,
+                    "unit" : unit,
+                    "content" : content
+                })
+                dHash = chain.getTHash(dumps(data).encode('ascii'))
+                session[requestId] = dHash
+                session["1"] = requestId
+                session['valid'] = "valid"
+                session['signed'] = "signed"
+                app.logger.info(requestId)
+                app.logger.info(dHash)
+                return render_template('user/apply.html', subject=subject, unit=unit, content=content)
+            elif 'draft' in checker :
+                app.logger.info('draft')
+                session['signed'] = "not signed"
+                status = session['signed']
+                requestId = session["1"]
+                integrity = "Invaid"
+                session['valid'] = integrity
+                proof = "Not Defined"
+                query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+                app.logger.info(query)
+                try:
+                    cursor.execute(query)
+                    mysql.connection.commit()
+                    cursor.close()
+                except Exception as e:
+                    app.logger.error(e)
+                return redirect(url_for('draft'))
+            else :
+                status = session['signed']
+                requestId = session["1"]
+                proof = session[requestId]
+                query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+                if session['update'] == True:
+                    query = 'UPDATE request SET status="signed", integrity="valid" where requestId="' + requestId + '";'
+                app.logger.info(query)
+                app.logger.info('submit')
+                try:
+                    cursor.execute(query)
+                    mysql.connection.commit()
+                    cursor.close()
+                except Exception as e:
+                    app.logger.error(e)
+                session['signed'] = "not signed"
+                return render_template('user/apply.html')
     return render_template('user/apply.html')
+
+@app.route('/user/delete', methods = ['POST'])
+@isUserLoggedIn
+def deleteRequest():
+    requestId = request.form['requestId']
+    cursor = mysql.connection.cursor()
+    query = "DELETE FROM request where requestId = '" + requestId +"';"
+    app.logger.info(query)
+    cursor.execute(query)
+    mysql.connection.commit()
+    cursor.close()
+    return redirect(url_for('draft'))
 
 @app.route('/user/draft', methods = ['GET', 'POST'])
 @isUserLoggedIn
 def draft():
-    return render_template('user/draft.html')
+    cursor = mysql.connection.cursor()
+    query = "SELECT requestId, subject, submisionDate from request where integrity='Invaid' or status = 'not signed';"
+    app.logger.info(query)
+    cursor.execute(query)
+    records = cursor.fetchall()
+    mysql.connection.commit()
+    cursor.close()
+#    for count,row in enumerate(records):
+#        app.logger.info(count)
+#        app.logger.info(row)
+    return render_template('user/draft.html', records=records)
+
+
 
 @app.route('/user/settings', methods = ['GET', 'POST'])
 @isUserLoggedIn
@@ -313,13 +365,6 @@ def officialSettings():
     if request.method == 'POST':
         return render_template('official/settings.html')
     return render_template('official/settings.html')
-
-#@app.route('/official/documents', methods = ['GET', 'POST'])
-#@isOfficialLoggedIn
-#def officialDocs():
-#    if request.method == 'POST':
-#        return render_template('official/document.html')
-#    return render_template('official/document.html')
 
 # Admin Panel
 

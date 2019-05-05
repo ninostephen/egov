@@ -11,7 +11,7 @@
 	{% include 'includes/_userSidebar.html' %}
 		<!-- Main
 		============= -->
-		<main class="col-sm-9 offset-sm-3 coml-md-19 offset-md-2 pt-3">
+		<main class="col-sm-10 offset-sm-3 coml-md-19 offset-md-2 pt-3">
 			<h1>Drafts</h1>
 			<div style="margin-top:50px;">
 				<table id='drafts' class="table table-striped">
@@ -22,24 +22,26 @@
 						<th>Options</th>
 					</thead>
 					<tbody>
+						{% for row in records  %}
 						<tr>
-							<td style="width:50px;">1</td>
-							<td>Kill</td>
-							<td>1/09/1998</td>
+							<td style="width:50px;">#</td>
+							<td>{{ row['subject'] }}</td>
+							<td>{{ row['submisionDate'] }}</td>
 							<td style="width:170px;">
-								<button class="btn btn-success">Send</button>
-								<button class="btn btn-danger">Delete</button>
+								<form action="{{ url_for('application', requestId=row['requestId']) }}" method="POST">
+									<input type="hidden" id="update" name="update" value="update">
+									<input type="hidden" name="requestId" value="{{ row['requestId'] }}">
+									<button class="btn btn-success" type="submit">Return</button>
+								</form>
+								<form  action="{{ url_for('deleteRequest') }}" method="post">
+									<input type="hidden" name="requestId" value="{{ row['requestId'] }}">
+									<button class="btn btn-danger" type="submit">Delete</button>
+								</form>
+
+
 							</td>
 						</tr>
-						<tr>
-							<td style="width:50px;">2</td>
-							<td>Kill</td>
-							<td>1/09/1998</td>
-							<td style="width:170px;">
-								<button class="btn btn-success">Send</button>
-								<button class="btn btn-danger">Delete</button>
-							</td>
-						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
