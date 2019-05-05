@@ -15,6 +15,7 @@ from flask_mysqldb import MySQL
 from uuid import uuid4
 from json import dumps
 from functools import wraps
+from base64 import b64encode
 from passlib.hash import sha256_crypt
 
 from blockchain  import Blockchain
@@ -74,17 +75,17 @@ def isAdminLoggedIn(f):
 # Common Signout
 @app.route('/user/signout', methods = ['GET','POST'])
 def signoutUser():
-    session['loggedIn'] = False
+    session.clear()
     return redirect(url_for("userLogin"))
 
 @app.route('/official/signout', methods = ['GET','POST'])
 def signoutOfficial():
-    session['loggedIn'] = False
+    session.clear()
     return redirect(url_for("officialLogin"))
 
 @app.route('/admin/signout', methods = ['GET','POST'])
 def signoutAdmin():
-    session['loggedIn'] = False
+    session.clear()
     return redirect(url_for("adminLogin"))
 
 # User Pages
@@ -123,8 +124,32 @@ def registerUser():
         name = request.form['fname']
         username = request.form['uname']
         password = request.form['pwd']
+        password = sha256_crypt.hash(password)
         #confirm = request.form['cpwd']
-        
+
+        #generate wallet address UUID
+        _ = keyGen(username=username, type='user')
+        userid = generateWalletAddr(username=username, type='user')
+#        app.logger.info(userid)
+#        app.logger.info(username)
+#        app.logger.info(password)
+#        app.logger.info(name)
+        cursor = mysql.connection.cursor()
+        query = 'INSERT INTO users(userid,username,name, password) VALUES ( "' + userid + '","' + username + '","' + name + '","' + password + '");'
+#        app.logger.info(query)
+        result = cursor.execute(query)
+#        app.logger.info(result)
+        mysql.connection.commit()
+        type = 'user'
+        publicKey = getPublicKey(username=username, type='user').decode('utf-8')
+        query = 'INSERT INTO userKeys(userid,type,publilcKey) VALUES ( "' + userid + '","' + type + '","' + publicKey + '");'
+        app.logger.info(query)
+        result = cursor.execute(query)
+#        app.logger.info(result)
+        mysql.connection.commit()
+        cursor.close()
+        if result :
+            return redirect(url_for('userLogin'))
         return render_template('user/signup.html')
     return render_template('user/signup.html')
 

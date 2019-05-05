@@ -18,11 +18,12 @@ def keyGen(username, type='user'):
     publicKey = keys.get_public_key(privateKey, curve.P256)
     keys.export_key(privateKey, curve = curve.P256, filepath = "keys/" + type + "Key/" +  privateKeyFile)
     keys.export_key(publicKey, curve = curve.P256, filepath = "keys/" +type + "Key/" + publicKeyFile)
-    return privateKey, publicKey
+    return True
+    #return privateKey, publicKey
 
 def getPublicKey(username, type='user'):
     privateKey, publicKey = keys.import_key("keys/" + type + "Key/" + username + '_pubkey.pem')
-    return publicKey
+    return str(publicKey).encode('ascii')
 
 def signTransaction(username, transactionData, type='user'):
     privateKey, publicKey = keys.import_key("keys/" + type + "Key/" + username + '_privkey.pem')
