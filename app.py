@@ -178,11 +178,12 @@ def apply():
 #        app.logger.info(checker)
         status = "not signed"
         userid = session['userid']
-        requestId = str(uuid4()).replace("-","")
+
         comments = "null"
         integrity = "valid"
         #app.logger.info(values)
         if 'sign' in checker :
+            requestId = str(uuid4()).replace("-","")
             app.logger.info('sign')
             data = OrderedDict({
                 "subject" : subject,
@@ -191,21 +192,27 @@ def apply():
             })
             dHash = chain.getTHash(dumps(data).encode('ascii'))
             session[requestId] = dHash
+            session["1"] = requestId
+            app.logger.info(requestId)
             app.logger.info(dHash)
             return render_template('user/apply.html', subject=subject, unit=unit, content=content)
         elif 'draft' in checker :
             app.logger.info('draft')
             return render_template('user/draft.html')
         else :
+            requestId = session["1"]
+            proof = session[requestId]
+            query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+            app.logger.info('query')
             app.logger.info('submit')
 
             try:
                 pass
-            #    cursor.execute(query)
-            #    mysql.connection.commit()
+                cursor.execute(query)
+                mysql.connection.commit()
+                cursor.close()
             except Exception as e:
-                pass
-            #    print(e)
+                app.logger.error(e)
             return render_template('user/apply.html')
     return render_template('user/apply.html')
 
