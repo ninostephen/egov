@@ -168,26 +168,33 @@ def apply():
     if request.method == 'POST':
         subject = request.form['subject']
         unit = request.form['unit'].lower()
-        content = request.form['content']
+        body = request.form['content']
+        checker = request.form['checker']
         cursor = mysql.connection.cursor()
-
-        if 'sign' in request.form :
-            pass
-        elif 'draft' in request.form :
-            pass
-        elif 'submit' in request.form :
-            transaction = {
-            'subject' : subject,
-            'content' : content,
-            'unit' : unit
-            }
-            r, s, transactionData = signTransaction(username='nino', transactionData=dumps(transactionData), type='user')
-            query = "INSERT INTO request(reqId, unit, requesteeId, reqHeading, content, s, r) VALUES ({reqId}, {unit}, {requesteeId}, {reqHeading}, {content}, {s}, {r})".format(reqId = str(uuid4()).replace("-","") , unit=unit, requesteeId=0, reqHeading=subject, content=content, s=s, r=r)
+        app.logger.info(subject)
+        app.logger.info(unit)
+        app.logger.info(body)
+        app.logger.info(checker)
+        if 'sign' in checker :
+            app.logger.info('sign')
+        elif 'draft' in checker :
+            app.logger.info('draft')
+        else :
+            app.logger.info('submit')
+            #transaction = {
+            #'subject' : subject,
+            #'content' : content,
+            #'unit' : unit
+            #}
+            #r, s, transactionData = signTransaction(username='nino', transactionData=dumps(transactionData), type='user')
+            #query = "INSERT INTO request(reqId, unit, requesteeId, reqHeading, content, s, r) VALUES ({reqId}, {unit}, {requesteeId}, {reqHeading}, {content}, {s}, {r})".format(reqId = str(uuid4()).replace("-","") , unit=unit, requesteeId=0, reqHeading=subject, content=content, s=s, r=r)
             try:
-                cursor.execute(query)
+                pass
+            #    cursor.execute(query)
+            #    mysql.connection.commit()
             except Exception as e:
-                print(e)
-        else:
+                pass
+            #    print(e)
             return render_template('user/apply.html')
     return render_template('user/apply.html')
 

@@ -42,14 +42,16 @@
 					<h4 for="content">Request Body</h4>
 					<textarea class="form-control" id="content" name="content" rows="3" placeholder="Enter Content"></textarea>
 				</div>
+
 				<!-- Add the button functions -->
 				<div class="row">
 					<div class="col-md-6 text-left">
-						<button class="btn btn-primary" type="submit" name="action" value="sign">Sign</button>
-						<button class="btn btn-warning" type="submit" name="action" value="draft">Draft</button>
+						<input type="hidden" id="checker" name="checker" value="submit ">
+						<button class="btn btn-primary" type="submit" onclick="getElementById('checker').value = 'sign';">Sign</button>
+						<button class="btn btn-warning" type="submit" onclick="getElementById('checker').value = 'draft';">Draft</button>
 					</div>
 					<div class="col-md-6 text-right">
-						<button class="btn btn-success" type="submit" name="action" value="submit">Submit</button>
+						<button class="btn btn-success" type="submit" name="action" value="submit" onclick="getElementById('checker').value = 'submit';">Submit</button>
 					</div>
 				</div>
 			</form>
