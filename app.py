@@ -74,17 +74,17 @@ def isAdminLoggedIn(f):
 # Common Signout
 @app.route('/user/signout', methods = ['GET','POST'])
 def signoutUser():
-#    session.destroy()
+    session['loggedIn'] = False
     return redirect(url_for("userLogin"))
 
 @app.route('/official/signout', methods = ['GET','POST'])
 def signoutOfficial():
-#    session.destroy()
+    session['loggedIn'] = False
     return redirect(url_for("officialLogin"))
 
 @app.route('/admin/signout', methods = ['GET','POST'])
 def signoutAdmin():
-#    session.destroy()
+    session['loggedIn'] = False
     return redirect(url_for("adminLogin"))
 
 # User Pages
@@ -119,8 +119,16 @@ def userLogin():
 
 @app.route('/user/signup', methods = ['GET', 'POST'])
 def registerUser():
+    if request.method == 'POST':
+        name = request.form['fname']
+        username = request.form['uname']
+        password = request.form['pwd']
+        #confirm = request.form['cpwd']
+        
+        return render_template('user/signup.html')
     return render_template('user/signup.html')
 
+@app.route('/', methods = ['GET', 'POST'])
 @app.route('/user/', methods = ['GET', 'POST'])
 @app.route('/user/apply', methods = ['GET', 'POST'])
 #@isUserLoggedIn
