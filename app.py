@@ -425,12 +425,7 @@ def adminLogin():
 #@isAdminLoggedIn
 def manageNodes():
     if request.method == 'POST':
-        if request.form['Add'] == 'Add':
-            pass
-        elif request.form['Edit'] == 'Edit':
-            pass
-        elif request.form['Delete'] == 'Delete':
-            pass
+
 
         return render_template('admin/node.html')
     return render_template('admin/node.html')
@@ -447,7 +442,30 @@ def adminSettings():
 #@isAdminLoggedIn
 def regOfficial():
     if request.method == 'POST':
+        name = request.form['name']
+        unit =request.form['unit']
+        email = request.form['email']
+        type = request.form['type']
+        grade = request.form['grade']
+        password = request.form['password']
+        app.logger.info(type)
+        secret = str(uuid4()).replace("-","")[0:6]
+        password = sha256_crypt.hash(password)
+        keyGen(username=email, type=type)
+        officialId = generateWalletAddr(username=email, type=type)
+        cursor = mysql.connection.cursor()
+        query = "INSERT INTO officials(officialId, name, unit, email, password, secret, type, grade) VALUES('" + officialId+ "', '" + name + "', '" + unit + "', '" + email + "', '" + password + "', '" + secret + "', '" + type + "', '" + grade + "');"
+        app.logger.info(query)
+        cursor.execute(query)
+        mysql.connection.commit()
 
+        publicKey = getPublicKey(username=email, type=type).decode('utf-8')
+        query = 'INSERT INTO userKeys(userid,type,publicKey) VALUES ( "' + officialId + '","' + type + '","' + publicKey + '");'
+        app.logger.info(query)
+        result = cursor.execute(query)
+        mysql.connection.commit()
+
+        cursor.close()
         return render_template('admin/register.html')
     return render_template('admin/register.html')
 

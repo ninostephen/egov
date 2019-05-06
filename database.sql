@@ -18,4 +18,4 @@ CREATE TABLE `egov`.`requestStatus` ( `requestId` VARCHAR(40) NOT NULL PRIMARY K
 CREATE TABLE `egov`.`nodes` ( `sno` INT(4) NOT NULL , `ip` VARCHAR(50) NOT NULL PRIMARY KEY, `status` VARCHAR(10) NOT NULL );
 
 #officials
-CREATE TABLE `egov`.`officials` ( `officialId` VARCHAR(70) NOT NULL PRIMARY KEY, `name` VARCHAR(50) NOT NULL , `unit` VARCHAR(10) NOT NULL , `email` VARCHAR(30) NOT NULL UNIQUE , `password` VARCHAR(300) NOT NULL , `secret` INT(6) NOT NULL UNIQUE, `registerationTime` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `type` VARCHAR(10) NOT NULL, `grade` INT(1) NOT NULL ) ;
+CREATE TABLE `egov`.`officials` ( `officialId` VARCHAR(70) NOT NULL PRIMARY KEY, `name` VARCHAR(50) NOT NULL , `unit` VARCHAR(10) NOT NULL , `email` VARCHAR(30) NOT NULL UNIQUE , `password` VARCHAR(300) NOT NULL , `secret` VARCHAR(6) NOT NULL UNIQUE, `registerationTime` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `type` VARCHAR(10) NOT NULL, `grade` INT(1) NOT NULL ) ;

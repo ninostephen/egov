@@ -11,7 +11,7 @@ from hashlib import sha384
 from hashlib import new
 from base58check import b58encode
 
-def keyGen(username, type='user'):
+def keyGen(username, type):
     privateKeyFile = username + '_privkey.pem'
     publicKeyFile = username + '_pubkey.pem'
     privateKey = keys.gen_private_key(curve.P256)
@@ -21,7 +21,7 @@ def keyGen(username, type='user'):
     return True
     #return privateKey, publicKey
 
-def getPublicKey(username, type='user'):
+def getPublicKey(username, type):
     privateKey, publicKey = keys.import_key("keys/" + type + "Key/" + username + '_pubkey.pem')
     return str(publicKey).encode('ascii')
 
@@ -34,8 +34,8 @@ def verifyTransaction(r, s, transactionData, publicKey):
     valid = ecdsa.verify((r,s), transactionData, publicKey, hashfunc = sha384)
     return valid
 
-def generateWalletAddr(username, type='user'):
-    publicKey = getPublicKey(username)
+def generateWalletAddr(username, type):
+    publicKey = getPublicKey(username,type)
     h = sha256()
     h.update(str(publicKey).encode('utf-8'))
     firstHash = h.hexdigest()
