@@ -12,10 +12,12 @@ from flask import session
 from flask import logging
 from flask import render_template
 from flask_mysqldb import MySQL
+
 from uuid import uuid4
 from json import dumps
 from functools import wraps
 from base64 import b64encode
+from datetime import datetime
 from collections import OrderedDict
 from passlib.hash import sha256_crypt
 
@@ -151,7 +153,7 @@ def registerUser():
         mysql.connection.commit()
         type = 'user'
         publicKey = getPublicKey(username=username, type='user').decode('utf-8')
-        query = 'INSERT INTO userKeys(userid,type,publilcKey) VALUES ( "' + userid + '","' + type + '","' + publicKey + '");'
+        query = 'INSERT INTO userKeys(userid,type,publicKey) VALUES ( "' + userid + '","' + type + '","' + publicKey + '");'
 #        app.logger.info(query)
         result = cursor.execute(query)
 #        app.logger.info(result)
@@ -313,6 +315,46 @@ def status():
 @app.route('/user/settings', methods = ['GET', 'POST'])
 @isUserLoggedIn
 def settings():
+    if request.method == "POST":
+        checker = request.form['checker']
+        app.logger.info(checker)
+        if checker == "changePwd":
+            password = request.form['opassword']
+            newPassord = request.form['npassword']
+            confirm = request.form['cpassword']
+            if newPassord == confirm:
+                cursor = mysql.connection.cursor()
+                query = "SELECT password FROM users where username = '" + session['username'] + "';"
+                app.logger.info(query)
+                cursor.execute(query)
+                record = cursor.fetchone()
+                hash = record['password']
+                app.logger.info(hash)
+                app.logger.info(sha256_crypt.hash(password))
+                if sha256_crypt.verify(password, hash) :
+                    query = "UPDATE users SET password ='" + sha256_crypt.hash(newPassord) +"' WHERE username = '" + session['username'] + "';"
+                    cursor.execute(query)
+                    mysql.connection.commit()
+                    cursor.close()
+        elif checker == "changeKey":
+            query = "UPDATE userKeys SET deprication ='" + datetime.now().isoformat().split('T')[0] +"' WHERE userid = '" + session['userid'] + "' and deprication = 'NULL';"
+            app.logger.info(query)
+            cursor = mysql.connection.cursor()
+            cursor.execute(query)
+            mysql.connection.commit()
+            type = 'user'
+            _ = keyGen(username = session['username'], type = type)
+            publicKey = getPublicKey(username=session['username'], type='user').decode('utf-8')
+            query = 'INSERT INTO userKeys(userid,type,publicKey) VALUES ( "' + session["userid"] + '","' + type + '","' + publicKey + '");'
+            app.logger.info(query)
+            cursor.execute(query)
+            mysql.connection.commit()
+            cursor.close()
+        elif checker == '2FA':
+            pass
+        else:
+            pass
+        return render_template('user/settings.html')
     return render_template('user/settings.html')
 
 

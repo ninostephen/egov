@@ -33,50 +33,51 @@
 	<main class="col-sm-9 offset-sm-3 coml-md-19 offset-md-2 pt-3">
 		<h1>Settings</h1>
 		<div style="margin-top:50px;">
-			<form style="margin-top:50px;" method="POST">
+			<form style="margin-top:50px;" method="POST" action="">
+				<input type="hidden" name="checker" id="checker" value="changePwd">
 				<div class="col-xs-6 col-sm-6 col-md-6">
 						<h4 for="subject">Change Password</h4>
 				</div>
 				<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="password" class="form-control input-sm" name="opassword" placeholder="Enter Old Password" required>
+							<input type="password" class="form-control input-sm" name="opassword" placeholder="Enter Old Password" >
 						</div>
 				</div>
 				<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="password" class="form-control input-sm" name="npassword" placeholder="Enter New Password" required>
+							<input type="password" class="form-control input-sm" name="npassword" placeholder="Enter New Password" >
 						</div>
 				</div>
 				<div class="col-xs-6 col-sm-6 col-md-6">
 						<div class="form-group">
-							<input type="password" class="form-control input-sm" name="cpassword" placeholder="Confirm New Password" required>
+							<input type="password" class="form-control input-sm" name="cpassword" placeholder="Confirm New Password" >
 						</div>
 				</div>
 				<div class="col-md-6 text-right">
-					<button class="btn btn-success">Change Password</button>
+					<button class="btn btn-success" type="submit" onclick="getElementById('checker').value = 'changePwd';">Change Password</button>
 				</div>
-			</form>
+			<!--/form-->
 			<div class="col-xs-6 col-sm-6 col-md-6">
 					<h4 for="subject">Change Key</h4>
-					<button class="btn btn-success">Change Key</button>
+					<button class="btn btn-danger" type="submit" onclick="getElementById('checker').value = 'changeKey';">Change Key</button>
 			</div>
 			<div style="margin-top:50px;">
-				<form style="margin-top:50px;" method="POST">
+				<!--form style="margin-top:50px;" method="POST"-->
 					<div class="col-xs-6 col-sm-6 col-md-6">
 							<h4 for="subject">2 Factor Authentication</h4>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 							<div class="form-group">
-								<input type="number" id="numdisabler" class="form-control input-sm" name="number" placeholder="Enter Phone Number" required>
+								<input type="number" id="numdisabler" class="form-control input-sm" name="number" placeholder="Enter Phone Number" >
 							</div>
 					</div>
 					<div class="col-xs-6 col-sm-6 col-md-6">
 							<div class="form-group">
-								<input type="email" class="form-control input-sm" name="email" placeholder="Enter E-Mail" required>
-							</div>
+								<input type="email" class="form-control input-sm" name="email" placeholder="Enter E-Mail" >
+						</div>
 					</div>
 					<div class="col-md-6 text-right">
-						<button class="btn btn-success">Add 2FA</button>
+						<button class="btn btn-success" type="submit" onclick="getElementById('checker').value = '2FA';">Add 2FA</button>
 					</div>
 				</form>
 
