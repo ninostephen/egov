@@ -11,40 +11,27 @@
 	{% include 'includes/_userSidebar.html' %}
 		<!-- Main
 		============= -->
-		<main class="col-sm-9 offset-sm-3 coml-md-19 offset-md-2 pt-3">
+		<main class="col-sm-9 offset-sm-3 coml-md-20 offset-md-2 pt-3">
 			<h1>Status</h1>
 			<div style="margin-top:50px;">
 				<table id='drafts' class="table table-striped">
 					<thead>
 						<th>No.</th>
 						<th>Subject</th>
-						<th>Date</th>
+						<th>Comments</th>
 						<th>Status</th>
-						<th>P.S: Eniku Manusilayila</th>
+						<th>Date</th>
 					</thead>
 					<tbody>
+						{% for row in records  %}
 						<tr>
-							<td style="width:50px;">1</td>
-							<td>Kill</td>
-							<td>1/09/1998</td>
-							<td style="width:170px;">
-								P.S: Veendum Manusilayila
-							</td>
-							<td style="width:170px;">
-								P.S: Veendum Manusilayila
-							</td>
+							<td style="width:70px;">#</td>
+							<td>{{ row['subject'] }}</td>
+							<td>{{ row['comments'] }}</td>
+							<td style="width:170px;">{{ row['action'] }}</td>
+							<td style="width:170px;">{{ row['actionTime'] }}</td>
 						</tr>
-						<tr>
-							<td style="width:50px;">2</td>
-							<td>Kill</td>
-							<td>1/09/1998</td>
-							<td style="width:170px;">
-								P.S: Veendum Manusilayila
-							</td>
-							<td style="width:170px;">
-								P.S: Veendum Manusilayila
-							</td>
-						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>

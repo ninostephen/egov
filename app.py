@@ -250,13 +250,16 @@ def apply():
                 status = session['signed']
                 requestId = session["1"]
                 proof = session[requestId]
-                query = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+                query1 = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
+                query2 = 'INSERT INTO requestStatus(requestId, officialId, action) VALUES("'+ requestId + '", "Not assigned", "applied")'
+                app.logger.info(session['update'])
                 if session['update'] == True:
-                    query = 'UPDATE request SET status="signed", integrity="valid" where requestId="' + requestId + '";'
-                app.logger.info(query)
+                    query1 = 'UPDATE request SET status="signed", integrity="valid" where requestId="' + requestId + '";'
+                app.logger.info(query1)
                 app.logger.info('submit')
                 try:
-                    cursor.execute(query)
+                    cursor.execute(query1)
+                    cursor.execute(query2)
                     mysql.connection.commit()
                     cursor.close()
                 except Exception as e:
@@ -285,12 +288,25 @@ def draft():
     app.logger.info(query)
     cursor.execute(query)
     records = cursor.fetchall()
-    mysql.connection.commit()
+#    mysql.connection.commit()
     cursor.close()
 #    for count,row in enumerate(records):
 #        app.logger.info(count)
 #        app.logger.info(row)
     return render_template('user/draft.html', records=records)
+
+@app.route('/user/status', methods = ['GET', 'POST'])
+@isUserLoggedIn
+def status():
+    cursor = mysql.connection.cursor()
+    query = "SELECT request.requestId, subject, comments, action, actionTime from request, requestStatus where request.requestId = requestStatus.requestId;"
+    app.logger.info(query)
+    cursor.execute(query)
+    records = cursor.fetchall()
+    app.logger.info(records)
+#    mysql.connection.commit()
+    cursor.close()
+    return render_template('user/status.html', records = records)
 
 
 
@@ -300,10 +316,6 @@ def settings():
     return render_template('user/settings.html')
 
 
-@app.route('/user/status', methods = ['GET', 'POST'])
-@isUserLoggedIn
-def status():
-    return render_template('user/status.html')
 
 
 # Official Pages
