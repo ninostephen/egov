@@ -49,9 +49,9 @@ def isUserLoggedIn(f):
         if 'loggedIn' in session :
             return f(*args, **kwargs)
         else :
-#            flash('Unauthorised. Please Login','danger')
             return redirect(url_for('userLogin'))
     return wrap
+
 
 # Check if user logged in
 def isOfficialLoggedIn(f):
@@ -60,9 +60,9 @@ def isOfficialLoggedIn(f):
         if 'loggedIn' in session :
             return f(*args, **kwargs)
         else :
-#            flash('Unauthorised. Please Login','danger')
             return redirect(url_for('officialLogin'))
     return wrap
+
 
 # Check if user logged in
 def isAdminLoggedIn(f):
@@ -71,9 +71,9 @@ def isAdminLoggedIn(f):
         if 'loggedIn' in session :
             return f(*args, **kwargs)
         else :
-#            flash('Unauthorised. Please Login','danger')
             return redirect(url_for('adminLogin'))
     return wrap
+
 
 # Common Signout
 @app.route('/user/signout', methods = ['GET','POST'])
@@ -81,15 +81,18 @@ def signoutUser():
     session.clear()
     return redirect(url_for("userLogin"))
 
+
 @app.route('/official/signout', methods = ['GET','POST'])
 def signoutOfficial():
     session.clear()
     return redirect(url_for("officialLogin"))
 
+
 @app.route('/admin/signout', methods = ['GET','POST'])
 def signoutAdmin():
     session.clear()
     return redirect(url_for("adminLogin"))
+
 
 # User Pages
 @app.route('/user/login', methods = ['GET', 'POST'])
@@ -99,7 +102,7 @@ def userLogin():
         passwordCandidate = request.form['pwd']
 
         query = "SELECT * FROM users where username = '" + username +"';"
-#        app.logger.info(query)
+        app.logger.info(query)
         cursor = mysql.connection.cursor()
         results = cursor.execute(query)
         if results > 0 :
@@ -113,8 +116,6 @@ def userLogin():
                 session['userid'] = data['userid']
                 session['rid'] = False
                 session['update'] = False
-#                session['secret_key'] = str(uuid4()).replace("-","") + str(uuid4()).replace("-","")
-
                 return redirect(url_for('apply'))
             else :
                 error = 'Invaid Username or Password'
@@ -126,7 +127,6 @@ def userLogin():
             return redirect(url_for('userLogin'))
         return render_template('user/login.html')
     return render_template('user/login.html')
-
 
 
 @app.route('/user/signup', methods = ['GET', 'POST'])
@@ -141,28 +141,23 @@ def registerUser():
         #generate wallet address UUID
         _ = keyGen(username=username, type='user')
         userid = generateWalletAddr(username=username, type='user')
-#        app.logger.info(userid)
-#        app.logger.info(username)
-#        app.logger.info(password)
-#        app.logger.info(name)
         cursor = mysql.connection.cursor()
         query = 'INSERT INTO users(userid,username,name, password) VALUES ( "' + userid + '","' + username + '","' + name + '","' + password + '");'
-#        app.logger.info(query)
+        app.logger.info(query)
         result = cursor.execute(query)
-#        app.logger.info(result)
         mysql.connection.commit()
         type = 'user'
         publicKey = getPublicKey(username=username, type='user').decode('utf-8')
         query = 'INSERT INTO userKeys(userid,type,publicKey) VALUES ( "' + userid + '","' + type + '","' + publicKey + '");'
-#        app.logger.info(query)
+        app.logger.info(query)
         result = cursor.execute(query)
-#        app.logger.info(result)
         mysql.connection.commit()
         cursor.close()
         if result :
             return redirect(url_for('userLogin'))
         return render_template('user/signup.html')
     return render_template('user/signup.html')
+
 
 @app.route('/user/application/<requestId>', methods = ['GET', 'POST'])
 @isUserLoggedIn
@@ -174,14 +169,11 @@ def application(requestId):
     return redirect(url_for('apply'))
 
 
-
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/user/', methods = ['GET', 'POST'])
 @app.route('/user/apply', methods = ['GET', 'POST'])
 @isUserLoggedIn
 def apply():
-#    UNITS = ['iedc', 'nss', 'ieee', 'technocratz']s
-
     if request.method == 'POST':
         if session['rid']:
             requestId = session['rid']
@@ -206,10 +198,7 @@ def apply():
             content = request.form['content']
             checker = request.form['checker']
             cursor = mysql.connection.cursor()
-    #        app.logger.info(subject)
-    #        app.logger.info(unit)
-    #        app.logger.info(content)
-    #        app.logger.info(checker)
+
             userid = session['userid']
             comments = "null"
             integrity = "Invaid"
@@ -270,6 +259,7 @@ def apply():
                 return render_template('user/apply.html')
     return render_template('user/apply.html')
 
+
 @app.route('/user/delete', methods = ['POST'])
 @isUserLoggedIn
 def deleteRequest():
@@ -282,6 +272,7 @@ def deleteRequest():
     cursor.close()
     return redirect(url_for('draft'))
 
+
 @app.route('/user/draft', methods = ['GET', 'POST'])
 @isUserLoggedIn
 def draft():
@@ -290,12 +281,9 @@ def draft():
     app.logger.info(query)
     cursor.execute(query)
     records = cursor.fetchall()
-#    mysql.connection.commit()
     cursor.close()
-#    for count,row in enumerate(records):
-#        app.logger.info(count)
-#        app.logger.info(row)
     return render_template('user/draft.html', records=records)
+
 
 @app.route('/user/status', methods = ['GET', 'POST'])
 @isUserLoggedIn
@@ -306,10 +294,8 @@ def status():
     cursor.execute(query)
     records = cursor.fetchall()
     app.logger.info(records)
-#    mysql.connection.commit()
     cursor.close()
     return render_template('user/status.html', records = records)
-
 
 
 @app.route('/user/settings', methods = ['GET', 'POST'])
@@ -365,8 +351,6 @@ def settings():
     return render_template('user/settings.html')
 
 
-
-
 # Official Pages
 
 @app.route('/official/login', methods = ['GET', 'POST'])
@@ -395,6 +379,7 @@ def officialLogin():
             return redirect(url_for('reqList'))
         return render_template('official/officialslogin.html')
     return render_template('official/officialslogin.html')
+
 
 @app.route('/official/', methods = ['GET', 'POST'])
 @app.route('/official/list', methods = ['GET', 'POST'])
