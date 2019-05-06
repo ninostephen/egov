@@ -351,7 +351,14 @@ def settings():
             mysql.connection.commit()
             cursor.close()
         elif checker == '2FA':
-            pass
+            email = request.form['email']
+            phone = request.form['number']
+            query = "INSERT INTO settings(userid, phone, email, temporaryCode) VALUES('" + session['userid'] +"' , '"+ phone +"' , '"+ email +"' , '"+ str(uuid4()).replace("-","")[0:6] +"');"
+            app.logger.info(query)
+            cursor = mysql.connection.cursor()
+            cursor.execute(query)
+            mysql.connection.commit()
+            cursor.close()
         else:
             pass
         return render_template('user/settings.html')
