@@ -27,20 +27,19 @@
 										    <tr>
 										      <th scope="col">#</th>
 										      <th scope="col">Requestee</th>
-										      <th scope="col">Office</th>
 										      <th scope="col">Date</th>
-										      <th scope="col">Request</th>
+										      <th scope="col">Request Subject</th>
 										    </tr>
 										  </thead>
 										  <tbody>
+												{% for row in records %}
 										    <tr>
-										      <th scope="row">1</th>
-										      <td>Mark Zuckerberg</td>
-										      <td>Silicon Valley</td>
-										      <td>08/04/2019</td>
-										      <td>Request to breach facebook user data without being thrown into prison</td>
+										      <th scope="row">#</th>
+										      <td>{{ row['name'] }}</td>
+										      <td>{{ row['submisionDate'] }}</td>
+										      <td>{{ row['subject'] }}</td>
 										    </tr>
-
+												{% endfor %}
 										  </tbody>
 								</table>
 							</div>

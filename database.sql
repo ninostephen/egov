@@ -5,7 +5,7 @@ CREATE TABLE `egov`.`users` ( `userid` VARCHAR(70) NOT NULL PRIMARY KEY , `usern
 CREATE TABLE `egov`.`userKeys` ( `userid` VARCHAR(70) NOT NULL , `type` VARCHAR(10) NOT NULL , `publicKey` VARCHAR(300) NOT NULL UNIQUE, `creation` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `deprication` DATE );
 
 #Request table
-CREATE TABLE `egov`.`request` ( `requestID` VARCHAR(40) NOT NULL PRIMARY KEY, `userid` VARCHAR(70) NOT NULL , `unit` VARCHAR(10) NOT NULL , `subject` VARCHAR(50) NOT NULL , `body` TEXT NOT NULL , `submisionDate` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `status` VARCHAR(10) NOT NULL , `comments` TEXT NOT NULL , `integrity` VARCHAR(10) NOT NULL, `proof` VARCHAR(300) NOT NULL);
+CREATE TABLE `egov`.`request` ( `requestID` VARCHAR(40) NOT NULL PRIMARY KEY, `userid` VARCHAR(70) NOT NULL , `unit` VARCHAR(10) NOT NULL , `subject` VARCHAR(150) NOT NULL , `body` TEXT NOT NULL , `submisionDate` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `status` VARCHAR(10) NOT NULL , `comments` TEXT NOT NULL , `integrity` VARCHAR(10) NOT NULL, `proof` VARCHAR(300) NOT NULL);
 
 #Settings
 #CREATE TABLE `egov`.`settings` ( `userid` VARCHAR(70) NOT NULL PRIMARY KEY, `phone` INT(10) NOT NULL UNIQUE , `email` VARCHAR(30) NOT NULL UNIQUE , `temporaryCode` INT(6) NOT NULL UNIQUE, `creation` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `deprication` DATE NOT NULL );

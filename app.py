@@ -242,15 +242,22 @@ def apply():
                 requestId = session["1"]
                 proof = session[requestId]
                 query1 = 'INSERT INTO request(requestID, userid, unit, subject, body, status, comments, integrity, proof) VALUES ( "' + requestId + '", "' + userid + '","' + unit + '","' + subject + '","' + content + '","' + status + '","' + comments + '","' + integrity + '","' + proof + '");'
-                query2 = 'INSERT INTO requestStatus(requestId, officialId, action) VALUES("'+ requestId + '", "Not assigned", "applied")'
-                app.logger.info(session['update'])
+                query2 = 'SELECT officialId FROM officials where grade = "1" and unit = "' + unit +'";'
+
+                app.logger.info(query2)
+                cursor.execute(query2)
+                records = cursor.fetchone()
+                officialId = records['officialId']
+                query3= 'INSERT INTO requestStatus(requestId, officialId, action) VALUES("'+ requestId + '", "' + officialId +'", "applied");'
+
                 if session['update'] == True:
                     query1 = 'UPDATE request SET status="signed", integrity="valid" where requestId="' + requestId + '";'
                 app.logger.info(query1)
                 app.logger.info('submit')
                 try:
                     cursor.execute(query1)
-                    cursor.execute(query2)
+
+                    cursor.execute(query3)
                     mysql.connection.commit()
                     cursor.close()
                 except Exception as e:
@@ -356,26 +363,30 @@ def settings():
 @app.route('/official/login', methods = ['GET', 'POST'])
 def officialLogin():
     if request.method == 'POST':
-        username = request.form['username']
-        passwordCandidate = request.form['password']
-
+        email = request.form['email']
+        password = request.form['password']
+        secret = request.form['key']
         cursor = mysql.connection.cursor()
-        results = cursor.execute("SELECT * FROM officalLogin where username = %s",[username])
+        query = "SELECT * FROM officials where email = '" + email + "' and type='official';"
+        results = cursor.execute(query)
         if results > 0 :
-            data = cur.fetchone()
-            password = data['password']
+            data = cursor.fetchone()
+            hash = data['password']
             #Compare Passwords
-            if sha256_crypt.verify(passwordCandidate, password):
+            if sha256_crypt.verify(password, hash):
                 session['loggedIn'] = True
-                session['username'] = username
-                session['secret_key'] = str(uuid4()).replace("-","") + str(uuid4()).replace("-","")
-
+                session['email'] = data['email']
+                session['name'] = data['name']
+                session['officialId'] = data['officialId']
+                session['unit'] = data['unit']
+                session['grade'] = data['grade']
+                session['type'] = data['type']
                 return redirect(url_for('reqList'))
             else :
-                error = 'Invaid Username or Password'
+
                 return redirect(url_for('officalLogin'))
         else :
-            error = 'Invaid Username or Password'
+
             return redirect(url_for('reqList'))
         return render_template('official/officialslogin.html')
     return render_template('official/officialslogin.html')
@@ -383,22 +394,18 @@ def officialLogin():
 
 @app.route('/official/', methods = ['GET', 'POST'])
 @app.route('/official/list', methods = ['GET', 'POST'])
-#@isOfficialLoggedIn
+@isOfficialLoggedIn
 def reqList():
-    if request.method == 'POST':
-        return render_template('official/requestlist.html')
-    cur = mysql.connection.cursor()
-#    result = cur.execute("SELECT * FROM  reqlist LIMIT 10")
-#    if result > 0:
-#        reqlist = []
-#        data = cur.fetchall()
-#        for item in data:
-#            reqlist.append(item)
-    return render_template('official/requestlist.html')
+    query =  "SELECT users.name, submisionDate, subject  FROM users, request, requestStatus, officials WHERE users.userid = request.userid and request.requestId = requestStatus.requestId and officials.officialId = '" + session['officialId'] +"';"
+    app.logger.info(query)
+    cursor = mysql.connection.cursor()
+    cursor.execute(query)
+    records = cursor.fetchall()
+
+    return render_template('official/requestlist.html', records=records)
 
 @app.route('/official/view/', methods = ['GET', 'POST'])
-@app.route('/official/view/<int:reqid>', methods = ['GET', 'POST'])
-#@isOfficialLoggedIn
+@isOfficialLoggedIn
 def reqView():
     if request.method == 'POST':
         return render_template('official/requestview.html')
@@ -406,7 +413,7 @@ def reqView():
 
 
 @app.route('/official/settings', methods = ['GET', 'POST'])
-#@isOfficialLoggedIn
+@isOfficialLoggedIn
 def officialSettings():
     if request.method == 'POST':
         return render_template('official/settings.html')
