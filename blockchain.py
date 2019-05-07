@@ -4,6 +4,7 @@
 # Blockchain Module
 
 from uuid import uuid4
+from json import load
 from json import dump
 from json import dumps
 from hashlib import sha256
@@ -72,8 +73,11 @@ class Blockchain:
             "headers" : dumps(headers),
             "transcation" : dumps(transaction)
         })
+        chain = {}
+        chain['main'] = []
+        chain['main'].append(data)
         with open('chain/chain.json',"a") as chainfile:
-            dump(data,chainfile)
+            dump(chain,chainfile)
             chainfile.write('\n')
     def addBlock(self, newBlock):
         cur = self.head
@@ -89,9 +93,9 @@ class Blockchain:
         #print(total)
         return total
 
-    def createBlock(self, requestID, userID, officialID, unitID, data):
+    def createBlock(self, username,type, requestID, userID, officialID, unitID, data):
         blockNo = self.length() + 1
-        SignerID = userID
+        SignerID = username
         headers = OrderedDict({
             "block Number" : blockNo,
             "request"      : requestID,
@@ -103,11 +107,11 @@ class Blockchain:
         dHash = self.getTHash(dumps(data).encode('ascii'))
         pHash = self.getPHash(blockNo - 1)
         rHash = self.getRHash(requestID)
-        r_CurrentTransaction, s_CurrentTransaction, tHash = signTransaction(username = SignerID, transactionData = tHash, type = 'user')
+        r_CurrentTransaction, s_CurrentTransaction, tHash = signTransaction(username = SignerID, transactionData = tHash, type = type)
 
-        r_PreviousTransaction, s_PreviousTransaction , pHash = signTransaction(username = SignerID, transactionData = pHash, type = 'user')
+        r_PreviousTransaction, s_PreviousTransaction , pHash = signTransaction(username = SignerID, transactionData = pHash, type = type)
 
-        r_RelatedPreviousTransaction, s_RelatedPreviousTransaction, rHash = signTransaction(username = SignerID, transactionData = rHash, type = 'user')
+        r_RelatedPreviousTransaction, s_RelatedPreviousTransaction, rHash = signTransaction(username = SignerID, transactionData = rHash, type = type)
 
         transaction = OrderedDict({
             "main" : {
@@ -137,9 +141,13 @@ class Blockchain:
             "transcation" : dumps(transaction)
         })
         self.addBlock(newBlock)
+        chain = {}
+        chain['main'] = []
+        chain['main'].append(data)
         with open('chain/chain.json',"a") as chainfile:
-            dump(data, chainfile)
+            dump(chain, chainfile)
             chainfile.write('\n')
+            
 
     def getTHash(self, data):
         return sha256(data).hexdigest()
@@ -164,23 +172,19 @@ class Blockchain:
 
 
     def displayChain(self):
-        elems = []
+#        elems = []
         cur = self.head
-        elem = []
+#        elem = []
         while cur.next != None:
             print(dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True))
-#            elem = [dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True)]
-#            elems.append(elem)
             cur = cur.next
-#            elem.pop()
-#            elem.pop()
         print(dumps(cur.headers, indent=4, sort_keys=False) , dumps(cur.transaction, indent=4, sort_keys=True))
+#        with open('chain/chain.json') as json_file:
+#            chain = load(json_file)
+#            for part in chain['main']:
+#                print(part['headers'])
+#                print(part['transaction'])
 
-#        elems.append(dumps(cur.headers, indent=4, sort_keys=True))
-#        elems.append(dumps(cur.transaction, indent=4, sort_keys=True))
-#        for elem in elems:
-#            print(elem)
-#        return elems
 
 
 '''

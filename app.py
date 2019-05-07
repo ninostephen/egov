@@ -212,6 +212,7 @@ def apply():
                     "unit" : unit,
                     "content" : content
                 })
+                session['data'] = data
                 dHash = chain.getTHash(dumps(data).encode('ascii'))
                 session[requestId] = dHash
                 session["1"] = requestId
@@ -256,10 +257,12 @@ def apply():
                 app.logger.info('submit')
                 try:
                     cursor.execute(query1)
-
                     cursor.execute(query3)
                     mysql.connection.commit()
                     cursor.close()
+                    data = session['data']
+                    newBlock = chain.createBlock(username= session['username'],type=session['type'], requestID=requestId, userID=userid, officialID=officialId, unitID=unit, data=data)
+                    chain.addBlock(newBlock)
                 except Exception as e:
                     app.logger.error(e)
                 session['signed'] = "not signed"
@@ -414,6 +417,13 @@ def getRequest(requestId):
     app.logger.info(requestId)
     session['rid'] = requestId
     session['requestId'] = requestId
+    query = "SELECT users.username from users,request where users.userid = request.userid and requestID = '" + requestId + "';"
+    app.logger.info(query)
+    cursor = mysql.connection.cursor()
+    cursor.execute(query)
+    records = cursor.fetchone()
+    app.logger.info(records)
+    session['user'] = records['username']
     return redirect(url_for('reqView'))
 
 @app.route('/official/view/', methods = ['GET', 'POST'])
@@ -453,8 +463,11 @@ def reqView():
             session[requestId] = dHash
             session['valid'] = "valid"
             session['signed'] = "signed"
+            session['data'] = data
+
             app.logger.info(requestId)
             app.logger.info(dHash)
+
 
             return render_template('official/requestview.html',records=session['records'],comments=comments,action=action)
         elif checker == "submit" :
@@ -492,7 +505,8 @@ def reqView():
             cursor.execute(query3)
             mysql.connection.commit()
             cursor.close()
-
+            newBlock = chain.createBlock(username= session['email'],type=session['type'],requestID=session['requestId'], userID=session['user'], officialID=session['officialId'], unitID=session['unit'], data=session['data'])
+            chain.addBlock(newBlock)
             return redirect(url_for('reqList'))
         else:
             pass
