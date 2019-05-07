@@ -470,7 +470,7 @@ def reqView():
             grade = session['grade']
             if grade > 2 or action == 'Drop':
                 app.logger.info('if section')
-                session['newOfficial'] = session['officialId']
+                session['newOfficial'] = "bSLz1yV1K89YL276ettk6jUMKMCUT2vH2VPEFgXJkYXMJUq7v4gYdeMtNWJ34pB6Xkp7"
 
             else:
                 app.logger.info('else section')
