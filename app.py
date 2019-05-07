@@ -645,7 +645,59 @@ def manageNodes():
 @app.route('/admin/settings', methods = ['GET', 'POST'])
 @isAdminLoggedIn
 def adminSettings():
-    if request.method == 'POST':
+    if request.method == "POST":
+        checker = request.form['checker']
+        app.logger.info(checker)
+        if checker == "changePwd":
+            password = request.form['opassword']
+            newPassord = request.form['npassword']
+            confirm = request.form['cpassword']
+            if newPassord == confirm:
+                cursor = mysql.connection.cursor()
+                query = "SELECT password FROM officials where email = '" + session['email'] + "';"
+                app.logger.info(query)
+                cursor.execute(query)
+                record = cursor.fetchone()
+                hash = record['password']
+                app.logger.info(hash)
+                app.logger.info(sha256_crypt.hash(password))
+                if sha256_crypt.verify(password, hash) :
+                    query = "UPDATE officials SET password ='" + sha256_crypt.hash(newPassord) +"' WHERE email = '" + session['email'] + "';"
+                    cursor.execute(query)
+                    mysql.connection.commit()
+                    cursor.close()
+        elif checker == "changeKey":
+            query = "UPDATE userKeys SET deprication ='" + datetime.now().isoformat().split('T')[0] +"' WHERE userid = '" + session['officialId'] + "' and deprication = 'NULL';"
+            app.logger.info(query)
+            cursor = mysql.connection.cursor()
+            cursor.execute(query)
+            mysql.connection.commit()
+            type = "official"
+            _ = keyGen(username = session['username'], type = type)
+            publicKey = getPublicKey(username=session['username'], type=type).decode('utf-8')
+            query = 'INSERT INTO userKeys(userid,type,publicKey) VALUES ( "' + session["officialId"] + '","' + type + '","' + publicKey + '");'
+            app.logger.info(query)
+            cursor.execute(query)
+            mysql.connection.commit()
+            cursor.close()
+        elif checker == '2FA':
+            email = request.form['email']
+            phone = request.form['number']
+            query = "INSERT INTO settings(userid, phone, email, temporaryCode) VALUES('" + session['officialId'] +"' , '"+ phone +"' , '"+ email +"' , '"+ str(uuid4()).replace("-","")[0:6] +"');"
+            app.logger.info(query)
+            cursor = mysql.connection.cursor()
+            cursor.execute(query)
+            mysql.connection.commit()
+            cursor.close()
+        elif checker == "backup":
+            app.logger.info("backup initiated")
+            with open("chain/chain.json") as f:
+                with open("chain/backup.json", "w") as f1:
+                    for line in f:
+                        f1.write(line)
+            app.logger.info("backup concluded")
+        else:
+            pass
         return render_template('admin/settings.html')
     return render_template('admin/settings.html')
 
