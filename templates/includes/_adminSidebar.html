@@ -16,36 +16,13 @@
               Node
             </a>
           </li>
-          <!--li class="nav-item">
-            <a class="nav-link active" href="../admin/coinstat">
-              <span data-feather="list"></span>
-              Coinstat
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="../admin/request">
-              <span data-feather="bar-chart-2"></span>
-              Request List
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="../admin/view">
-              <span data-feather="activity"></span>
-              Request View
-            </a>
-          </li-->
           <li class="nav-item">
             <a class="nav-link active" href="{{ url_for('regOfficial') }}">
               <span data-feather="user-plus"></span>
               Register Offical
             </a>
           </li>
-          <!--li class="nav-item">
-            <a class="nav-link active" href="../admin/debuguser">
-              <span data-feather="edit-2"></span>
-              Debug Information
-            </a>
-          </li-->
+
           <li class="nav-item">
             <a class="nav-link active" href="{{ url_for('adminSettings') }}">
               <span data-feather="settings"></span>
@@ -55,10 +32,8 @@
         </ul>
       </div>
       <ul class="navbar-nav px-3">
-
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
-          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="#4a90e2" stroke-width="3" stroke-linecap="square" stroke-linejoin="bevel"><path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9"/></svg>
+          <a class="nav-link" href="{{ url_for('signoutAdmin')}}">Sign out</a>
         </li>
       </ul>
     </nav>

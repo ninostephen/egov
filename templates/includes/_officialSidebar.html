@@ -11,18 +11,7 @@
 						</a>
 					</h2>
 
-					<!--li class="nav-item">
-						<a class="nav-link active" href="../official/coinstat">
-							<span data-feather="list"></span>
-							Coinstat
-						</a>
-					</li-->
-					<!--li class="nav-item">
-						<a class="nav-link active" href="../official/document">
-							<span data-feather="user-plus"></span>
-							Document
-						</a>
-					</li-->
+
 					<li class="nav-item">
 						<a class="nav-link active" href="{{ url_for('reqList') }}">
 							<span data-feather="bar-chart-2"></span>
@@ -42,6 +31,11 @@
 						</a>
 					</li>
 
+</ul>
+<ul class="navbar-nav px-3">
+	<li class="nav-item text-nowrap">
+		<a class="nav-link" href="{{ url_for('signoutOfficial')}}">Sign out</a>
+	</li>
 </ul>
 </div>
 </nav>
