@@ -556,12 +556,37 @@ def officialSettings():
 @app.route('/admin/login', methods = ['GET', 'POST'])
 def adminLogin():
     if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        secret = request.form['key']
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM officials where email = '" + email + "' and type='admin';"
+        results = cursor.execute(query)
+        if results > 0 :
+            data = cursor.fetchone()
+            hash = data['password']
+            #Compare Passwords
+            if sha256_crypt.verify(password, hash):
+                session['loggedIn'] = True
+                session['email'] = data['email']
+                session['username'] = data['email']
+                session['name'] = data['name']
+                session['officialId'] = data['officialId']
+                session['type'] = data['type']
+                return redirect(url_for('manageNodes'))
+            else :
+
+                return redirect(url_for('adminLogin'))
+        else :
+
+            return redirect(url_for('manageNodes'))
+
         return render_template('admin/adminlogin.html')
     return render_template('admin/adminlogin.html')
 
 @app.route('/admin/', methods = ['GET', 'POST'])
 @app.route('/admin/manage', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
+@isAdminLoggedIn
 def manageNodes():
     if request.method == 'POST':
 
@@ -570,7 +595,7 @@ def manageNodes():
     return render_template('admin/node.html')
 
 @app.route('/admin/settings', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
+@isAdminLoggedIn
 def adminSettings():
     if request.method == 'POST':
         return render_template('admin/settings.html')
@@ -578,7 +603,7 @@ def adminSettings():
 
 
 @app.route('/admin/register', methods = ['GET', 'POST'])
-#@isAdminLoggedIn
+@isAdminLoggedIn
 def regOfficial():
     if request.method == 'POST':
         name = request.form['name']

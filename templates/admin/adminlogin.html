@@ -10,20 +10,7 @@
 	{% block body %}
 	{% include 'includes/_navbar.html' %}
 
-	<!-- /////////////////// Navbar ///////////////////////////////////// -->
-	<!--nav class="navbar navbar-expand-md navbar-dark bg-dark">
-		<a class="navbar-brand" href="#">PES</a>
 
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-
-		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-			<ul class="navbar-nav mr-auto " style="margin-left: 50px;">
-				<li class="nav-item active"><a class="nav-link" href="#">official<span class="sr-only">(current)</span></a></li>
-			</ul>
-		</div>
-	</nav-->
 	<!-- ////////////////// Content /////////////////////////////////////// -->
 	<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 		<div class="container" style="margin: 50px 0 0 250px ;">
@@ -35,13 +22,13 @@
 								<h1 class="h3 mb-3 font-weight-normal">Admin Login</h1>
 								<div class="mt-5"></div>
 								<label for="inputEmail" class="sr-only">Admin ID</label>
-								<input type="text" name="of_if"  class="form-control" placeholder="Admin ID" required autofocus>
+								<input type="text" name="email"  class="form-control" placeholder="Admin ID" required autofocus>
 								<br>
 								<label for="inputPassword" class="sr-only">Password</label>
-								<input type="password" name="pwd"  class="form-control" placeholder="Password" required>
+								<input type="password" name="password"  class="form-control" placeholder="Password" required>
 								<br>
 								<label for="check_key" class="sr-only">Check Key</label>
-								<input type="text" name="ch_key"  class="form-control" placeholder="Check Key" required>
+								<input type="password" name="key"  class="form-control" placeholder="Check Key" required>
 								<!--div class="mt-3"><a href="index.html">Not an officals?Signin as official</a></div-->
 								<br>
 								<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
