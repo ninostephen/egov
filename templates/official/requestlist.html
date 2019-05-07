@@ -20,24 +20,30 @@
 				<div class="panel panel-default">
 
 					<div class="panel-body">
-						<form role="form" method="POST" action="#">
+						<!--form role="form" method="POST" action="#"-->
 							<div class="row">
 								<table class="table">
 										  <thead class="thead-dark">
 										    <tr>
-										      <th scope="col">#</th>
+
 										      <th scope="col">Requestee</th>
 										      <th scope="col">Date</th>
 										      <th scope="col">Request Subject</th>
+													<th scope="col">Action</th>
 										    </tr>
 										  </thead>
 										  <tbody>
 												{% for row in records %}
 										    <tr>
-										      <th scope="row">#</th>
 										      <td>{{ row['name'] }}</td>
 										      <td>{{ row['submisionDate'] }}</td>
 										      <td>{{ row['subject'] }}</td>
+													<td scope="row">
+														<form action="{{ url_for('getRequest', requestId=row['requestId']) }}" method="POST">
+															<input type="hidden" name="requestId" value="{{ row['requestId'] }}">
+															<button class="btn btn-success" type="submit">Open</button>
+														</form>
+													</td>
 										    </tr>
 												{% endfor %}
 										  </tbody>
@@ -47,7 +53,7 @@
 							<!--div class="form-group">
 								<input type="submit" class="form-control input-sm btn btn-info " value="Search">
 							</div-->
-						</form>
+						<!--/form-->
 					</div>
 				</div>
 			</div>

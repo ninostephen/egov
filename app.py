@@ -396,7 +396,7 @@ def officialLogin():
 @app.route('/official/list', methods = ['GET', 'POST'])
 @isOfficialLoggedIn
 def reqList():
-    query =  "SELECT users.name, submisionDate, subject  FROM users, request, requestStatus, officials WHERE users.userid = request.userid and request.requestId = requestStatus.requestId and officials.officialId = '" + session['officialId'] +"';"
+    query =  "SELECT request.requestId, users.name, submisionDate, subject  FROM users, request, requestStatus, officials WHERE users.userid = request.userid and request.requestId = requestStatus.requestId and officials.officialId = '" + session['officialId'] +"';"
     app.logger.info(query)
     cursor = mysql.connection.cursor()
     cursor.execute(query)
@@ -404,10 +404,18 @@ def reqList():
 
     return render_template('official/requestlist.html', records=records)
 
+@app.route('/official/view/<requestId>', methods = ['GET', 'POST'])
+@isOfficialLoggedIn
+def getRequest(requestId):
+    app.logger.info("getRequest method")
+    app.logger.info(requestId)
+    session['rid'] = requestId
+    return redirect(url_for('reqView'))
+
 @app.route('/official/view/', methods = ['GET', 'POST'])
 @isOfficialLoggedIn
 def reqView():
-    if request.method == 'POST':
+    if session['rid']:
         return render_template('official/requestview.html')
     return render_template('official/requestview.html')
 
