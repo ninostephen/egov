@@ -381,6 +381,7 @@ def officialLogin():
                 session['unit'] = data['unit']
                 session['grade'] = data['grade']
                 session['type'] = data['type']
+                session['rid'] = False
                 return redirect(url_for('reqList'))
             else :
 
@@ -410,13 +411,67 @@ def getRequest(requestId):
     app.logger.info("getRequest method")
     app.logger.info(requestId)
     session['rid'] = requestId
+    session['requestId'] = requestId
     return redirect(url_for('reqView'))
 
 @app.route('/official/view/', methods = ['GET', 'POST'])
 @isOfficialLoggedIn
 def reqView():
     if session['rid']:
-        return render_template('official/requestview.html')
+        session['signed'] = "not signed"
+        query =  "SELECT subject, submisionDate, body FROM request WHERE requestId ='" + session['rid'] +"';"
+        app.logger.info(query)
+        cursor = mysql.connection.cursor()
+        cursor.execute(query)
+        records = cursor.fetchone()
+        session['rid'] = False
+        session['records'] = records
+        app.logger.info(records)
+        return render_template('official/requestview.html', records=records)
+
+    if request.method ==  "POST":
+        if request.form['checker'] == 'sign':
+            comments = request.form['comments']
+            action = request.form['option']
+            app.logger.info(session['records'])
+            data = OrderedDict({
+                "comments" : comments,
+                "action" : action,
+                "signer" : session['officialId'],
+                "requestId" : session['requestId']
+            })
+            dHash = chain.getTHash(dumps(data).encode('ascii'))
+            requestId = session['requestId']
+            session[requestId] = dHash
+            session['valid'] = "valid"
+            session['signed'] = "signed"
+            app.logger.info(requestId)
+            app.logger.info(dHash)
+
+            return render_template('official/requestview.html',records=session['records'],comments=comments,action=action)
+        elif request.form['checker'] == "submit" and session['signed'] == "signed":
+            query1 = "UPDATE request SET comments = '" + request.form['comments'] + "', proof = '" + proof + "' WHERE requestId = '" + session['requestId'] + "' ;"
+            cursor = mysql.connection.cursor()
+            cursor.execute(query1)
+            grade = session['grade']
+            if grade > 2 :
+                pass
+            else:
+                grade = grade + 1
+            query2 = "SELECT officialId FROM officials WHERE unit = '" + session['unit'] + "' and grade = '" + grade  + "';"
+            if request.form['action'] == "Forward" :
+                if session['grade'] == '3':
+                    pass
+                query3 = "UPDATE requestStatus SET  WHERE requestId = '" + session['requestId'] + "' ;"
+            else :
+                query3 = "UPDATE requestStatus SET  WHERE requestId = '" + session['requestId'] + "' ;"
+
+            mysql.connection.commit()
+            cursor.execute(query2)
+            mysql.connection.commit()
+            cursor.close()
+        else:
+            pass
     return render_template('official/requestview.html')
 
 
