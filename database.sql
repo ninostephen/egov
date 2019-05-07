@@ -14,7 +14,7 @@ CREATE TABLE `egov`.`settings` ( `userid` VARCHAR(70) NOT NULL PRIMARY KEY, `pho
 CREATE TABLE `egov`.`requestStatus` ( `requestId` VARCHAR(40) NOT NULL PRIMARY KEY, `officialId` VARCHAR(70) NOT NULL , `action` TEXT NOT NULL , `actionTime` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP );
 
 # Nodes table
-CREATE TABLE `egov`.`nodes` ( `sno` INT(4) NOT NULL , `ip` VARCHAR(50) NOT NULL PRIMARY KEY, `status` VARCHAR(10) NOT NULL );
+CREATE TABLE `egov`.`nodes` ( `sno` INT(4) NOT NULL AUTO_INCREMENT PRIMARY KEY, `ip` VARCHAR(50) NOT NULL UNIQUE, `status` VARCHAR(10) NOT NULL );
 
 #officials
 CREATE TABLE `egov`.`officials` ( `officialId` VARCHAR(70) NOT NULL PRIMARY KEY, `name` VARCHAR(50) NOT NULL , `unit` VARCHAR(10) NOT NULL , `email` VARCHAR(30) NOT NULL UNIQUE , `password` VARCHAR(300) NOT NULL , `secret` VARCHAR(6) NOT NULL UNIQUE, `registerationTime` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP , `type` VARCHAR(10) NOT NULL, `grade` INT(1) NOT NULL ) ;

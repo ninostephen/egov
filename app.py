@@ -573,6 +573,7 @@ def adminLogin():
                 session['name'] = data['name']
                 session['officialId'] = data['officialId']
                 session['type'] = data['type']
+                session['update'] = False
                 return redirect(url_for('manageNodes'))
             else :
 
@@ -584,15 +585,62 @@ def adminLogin():
         return render_template('admin/adminlogin.html')
     return render_template('admin/adminlogin.html')
 
+@app.route('/admin/manage/<sno>', methods = ['GET', 'POST'])
+@isAdminLoggedIn
+def updateNode(sno):
+    app.logger.info('application method')
+    app.logger.info(sno)
+    session['sno'] = sno
+    session['update'] = True
+    return redirect(url_for('manageNodes'))
+
+@app.route('/admin/delete/<sno>', methods = ['GET', 'POST'])
+@isAdminLoggedIn
+def deleteNode(sno):
+    cursor = mysql.connection.cursor()
+    query = "DELETE FROM nodes WHERE sno = '" + sno +"';"
+    cursor.execute(query)
+    mysql.connection.commit()
+    cursor.close()
+    return redirect(url_for('manageNodes'))
+
 @app.route('/admin/', methods = ['GET', 'POST'])
 @app.route('/admin/manage', methods = ['GET', 'POST'])
 @isAdminLoggedIn
 def manageNodes():
+    if session['update']:
+        app.logger.info("update")
+        cursor = mysql.connection.cursor()
+        query = "SELECT ip FROM nodes WHERE sno = '" + session['sno'] + "' ;"
+        cursor.execute(query)
+        row = cursor.fetchone()
+        node = row['ip']
+        app.logger.info(node)
+        records = session['records']
+        session['update'] = False
+        cursor.close()
+        return render_template('admin/node.html', records=records, node=node)
+
     if request.method == 'POST':
+        app.logger.info("POST")
+        node = request.form['node']
+        cursor = mysql.connection.cursor()
+        query = "INSERT INTO nodes(ip,status) VALUES('" + node + "', 'active');"
+        cursor.execute(query)
+        mysql.connection.commit()
+        cursor.close()
+        records = session['records']
+        #return render_template('admin/node.html',records=records)
 
-
-        return render_template('admin/node.html')
-    return render_template('admin/node.html')
+    app.logger.info("show list part")
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM nodes;"
+    cursor.execute(query)
+    records = cursor.fetchall()
+    app.logger.info(records)
+    cursor.close()
+    session['records'] = records
+    return render_template('admin/node.html',records=records)
 
 @app.route('/admin/settings', methods = ['GET', 'POST'])
 @isAdminLoggedIn

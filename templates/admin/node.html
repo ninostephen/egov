@@ -24,14 +24,14 @@
 							<div class="row">
 								<div class="col-xs-6 col-sm-6 col-md-6">
 									<div class="form-group">
-										<input type="text" name="N_Add"  class="form-control input-sm" placeholder="Node Address">
+										<input type="text" name="node"  class="form-control input-sm" placeholder="Node Address" value="{{ node }}">
 									</div>
 								</div>
 								<div class="col-xs-6 col-sm-6 col-md-6">
-									<input type="submit" value="Add" class=" form-control input-sm btn btn-info ">
+									<input type="submit" value="Add" class=" form-control input-sm btn btn-primary ">
 									</div>
 								</div>
-
+								</form>
 							<div class="row">
 								<table class="table">
 										  <thead class="thead-dark">
@@ -39,25 +39,37 @@
 										      <th scope="col">#</th>
 										      <th scope="col">IP</th>
 										      <th scope="col">Status</th>
-										      <th scope="col"></th>
+										      <th scope="col">Action</th>
 										      <th scope="col"></th>
 										    </tr>
 										  </thead>
 										  <tbody>
+												{% for row in records %}
 										    <tr>
-										      <th scope="row">1</th>
-										      <td>192.168.21.3</td>
-										      <td>dead</td>
-										      <td><button type="submit" value="Edit" class="btn btn-primary"> Edit <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg> </button></td>
+										      <th scope="row">{{ row['sno'] }}</th>
+										      <td>{{ row['ip'] }}</td>
+										      <td>{{ row['status'] }}</td>
+										      <td>
+														<form action="{{ url_for('updateNode', sno=row['sno']) }}" method="POST">
+														<input type="hidden" name="sno" value="{{ row['sno'] }}">
 
-										      <td><button type="submit" value="Delete" class="btn btn-danger"> Delete <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg></button></td>
+														<button type="submit" value="Edit" class="btn btn-primary"> Edit <!--svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg--> </button>
+														</form>
+													</td>
+
+										      <td>
+														<form action="{{ url_for('deleteNode', sno=row['sno']) }}" method="POST">
+														<input type="hidden" name="sno" value="{{ row['sno'] }}">
+														<button type="submit" value="Delete" class="btn btn-danger"> Delete <!--svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-delete"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="18" y1="9" x2="12" y2="15"></line><line x1="12" y1="9" x2="18" y2="15"></line></svg--></button>
+														</form>
+													</td>
 										    </tr>
-
+												{% endfor %}
 										  </tbody>
 								</table>
 							</div>
 
-						</form>
+
 					</div>
 				</div>
 			</div>
