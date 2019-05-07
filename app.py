@@ -397,15 +397,16 @@ def officialLogin():
 @app.route('/official/list', methods = ['GET', 'POST'])
 @isOfficialLoggedIn
 def reqList():
-    query =  "SELECT request.requestId, users.name, submisionDate, subject  FROM users, request, requestStatus, officials WHERE users.userid = request.userid and request.requestId = requestStatus.requestId and officials.officialId = '" + session['officialId'] +"';"
+    #select users.name, request.submisionDate, request.subject, request.requestID, requestStatus.action, officials.grade from users, request, requestStatus, officials where users.userid = request.userid and request.requestID = requestStatus.requestId and request.unit = officials.unit and grade = "3" and request.unit = "IEDC";
+    query =  "SELECT users.name, request.submisionDate, request.subject, requestStatus.requestId, requestStatus.action, officials.grade FROM users, request, requestStatus, officials WHERE users.userid = request.userid and request.requestID = requestStatus.requestId and officials.officialId = requestStatus.officialId and request.unit = officials.unit and officials.grade = '" + str(session['grade']) +"' and request.unit = '" + session['unit'] +"';"
     app.logger.info(query)
     cursor = mysql.connection.cursor()
     cursor.execute(query)
     records = cursor.fetchall()
-
+    app.logger.info(records)
     return render_template('official/requestlist.html', records=records)
 
-@app.route('/official/view/<requestId>', methods = ['GET', 'POST'])
+@app.route('/official/view/<requestId>', methods = ['GET','POST'])
 @isOfficialLoggedIn
 def getRequest(requestId):
     app.logger.info("getRequest method")
@@ -430,9 +431,15 @@ def reqView():
         return render_template('official/requestview.html', records=records)
 
     if request.method ==  "POST":
-        if request.form['checker'] == 'sign':
-            comments = request.form['comments']
-            action = request.form['option']
+        app.logger.info('POST Section')
+        comments = request.form['comments']
+        action = request.form['option']
+        checker = request.form['checker']
+        app.logger.info('CHECKER')
+        app.logger.info(checker)
+        app.logger.info('SIGN VALUE')
+        app.logger.info(session['signed'])
+        if checker == 'sign':
             app.logger.info(session['records'])
             data = OrderedDict({
                 "comments" : comments,
@@ -449,30 +456,46 @@ def reqView():
             app.logger.info(dHash)
 
             return render_template('official/requestview.html',records=session['records'],comments=comments,action=action)
-        elif request.form['checker'] == "submit" and session['signed'] == "signed":
+        elif checker == "submit" :
+            app.logger.info('Submit Section')
+            requestId = session['requestId']
+            proof = session[requestId]
             query1 = "UPDATE request SET comments = '" + request.form['comments'] + "', proof = '" + proof + "' WHERE requestId = '" + session['requestId'] + "' ;"
             cursor = mysql.connection.cursor()
+            app.logger.info('query1')
+            app.logger.info(query1)
             cursor.execute(query1)
-            grade = session['grade']
-            if grade > 2 :
-                pass
-            else:
-                grade = grade + 1
-            query2 = "SELECT officialId FROM officials WHERE unit = '" + session['unit'] + "' and grade = '" + grade  + "';"
-            if request.form['action'] == "Forward" :
-                if session['grade'] == '3':
-                    pass
-                query3 = "UPDATE requestStatus SET  WHERE requestId = '" + session['requestId'] + "' ;"
-            else :
-                query3 = "UPDATE requestStatus SET  WHERE requestId = '" + session['requestId'] + "' ;"
-
             mysql.connection.commit()
-            cursor.execute(query2)
+
+            grade = session['grade']
+            if grade > 2 or action == 'Drop':
+                app.logger.info('if section')
+                session['newOfficial'] = session['officialId']
+
+            else:
+                app.logger.info('else section')
+
+                grade = grade + 1
+                query2 = "SELECT officialId,grade,name FROM officials WHERE unit = '" + session['unit'] + "' and grade = '" + str(grade)  + "';"
+                app.logger.info('query2')
+                app.logger.info(query2)
+                cursor.execute(query2)
+                record = cursor.fetchone()
+                app.logger.info(record)
+                session['newOfficial'] = record['officialId']
+
+            query3 = "UPDATE requestStatus SET officialId = '" + session['newOfficial'] +"', action = '" + action + "', actionTime ='" + datetime.now().isoformat() + "'  WHERE requestId = '" + session['requestId'] + "' ;"
+
+            app.logger.info('query3')
+            app.logger.info(query3)
+            cursor.execute(query3)
             mysql.connection.commit()
             cursor.close()
+
+            return redirect(url_for('reqList'))
         else:
             pass
-    return render_template('official/requestview.html')
+
 
 
 @app.route('/official/settings', methods = ['GET', 'POST'])
